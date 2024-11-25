@@ -1,4 +1,4 @@
-# FeedIA: Feedback y Predicción Inteligente para Negocios.
+# FeedIA: Feedback y Predicción Inteligente para tu Negocio.
 # Descripcion del proyecto
 
 FeedIA es una plataforma web diseñada para transformar la interacción cliente-negocio en valor estratégico. Con un simple escaneo de un código QR al pagar, los clientes pueden compartir opiniones rápidas y anónimas, calificar aspectos clave como el servicio, la comida y el ambiente, y escribir sugerencias o comentarios generales. A cambio, reciben puntos redimibles en futuras compras.
@@ -6,6 +6,7 @@ FeedIA es una plataforma web diseñada para transformar la interacción cliente-
 La plataforma no solo recolecta feedback, sino que analiza las respuestas en tiempo real utilizando inteligencia artificial para detectar sentimientos, tendencias y patrones clave. Esto permite a los negocios visualizar métricas como la satisfacción del cliente, la calidad del servicio y los productos estrella en un panel interactivo.
 
 FeedIA va más allá de las reseñas tradicionales: incluye un predictor de ventas, que permite a los negocios anticipar ingresos y planificar recursos, optimizando la operación diaria. Con esta combinación de herramientas, FeedIA se posiciona como una solución integral que mide y mejora continuamente la experiencia del cliente y la rentabilidad del negocio.
+
 
 
 # ¿Por qué FeedIA para tu Negocio?
