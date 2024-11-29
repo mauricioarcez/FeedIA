@@ -41,6 +41,11 @@ FeedIA va más allá de las reseñas tradicionales: incluye un predictor de vent
    - **Ahorro de tiempo en análisis de datos**: Al automatizar el análisis de las opiniones de los clientes, FeedIA elimina la necesidad de dedicar horas a revisar y procesar manualmente cada comentario.
    - **Acción rápida**: Las alertas y los informes automáticos te permiten tomar decisiones inmediatas, reduciendo el tiempo de respuesta ante problemas detectados.
 
----
 
 **FeedIA** no solo proporciona un sistema de retroalimentación eficiente, sino que transforma esa información en una ventaja estratégica para tu negocio. Desde la mejora de la experiencia del cliente hasta la predicción de ventas, FeedIA es la herramienta ideal para llevar tu negocio al siguiente nivel.
+
+# ¿ Como ?
+
+- **Sentiment Analysis:** Identifica si el sentimiento es positivo, negativo o neutral.
+- **Question-answering:** Extrae palabras clave como “pizza”, “quemado”, “sucio”.
+- **Zero-Shot Classification:** Clasifica la reseña en categorías como “comida” o “servicio”, para saber a que esta evaluando.
