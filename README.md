@@ -45,6 +45,8 @@ FeedIA va más allá de las reseñas tradicionales: incluye un predictor de vent
 **FeedIA** no solo proporciona un sistema de retroalimentación eficiente, sino que transforma esa información en una ventaja estratégica para tu negocio. Desde la mejora de la experiencia del cliente hasta la predicción de ventas, FeedIA es la herramienta ideal para llevar tu negocio al siguiente nivel.
 
 # ¿ Como ?
+ 
+BERT-like (modelos auto-codificadores): Son entrenados para predecir palabras faltantes en una oración, ideales para tareas de clasificación y extracción de información.
 
 - **Sentiment Analysis:** Identifica si el sentimiento es positivo, negativo o neutral.
 - **Question-answering:** Extrae palabras clave como “pizza”, “quemado”, “sucio”.
