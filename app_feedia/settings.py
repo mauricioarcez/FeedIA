@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-iwtbaj(jqci9im0y80djd&)r+t@mu1q0mbo$69%re%ol1m5#+3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.4', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     #Apps
-    'apps.encuestas'
+    'apps.encuestas',
+    'apps.negocios'
 ]
 
 MIDDLEWARE = [
