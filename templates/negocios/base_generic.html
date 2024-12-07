@@ -1,4 +1,4 @@
-<!-- templates/base.html -->
+<!-- templates/negocios/base_generic.html -->
 {% load static %}
 
 <!DOCTYPE html>
@@ -6,15 +6,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block titulo %}Inicio{% endblock %}
+    {% block titulo %}Panel del Negocio{% endblock %}
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 </head>
 <body>
     <header>
         <nav>
-            <a href="/">Inicio</a>
-            <a href="{% url 'apps.negocios:registrar_negocio' %}">Registrar negocio</a>
-            <a href="{% url 'apps.negocios:iniciar_sesion' %}">Iniciar sesión</a>
+            <a href="{% url 'apps.negocios:reportes' %}">Reportes</a>
+            <a href="{% url 'apps.negocios:perfil_negocio' %}">Perfil</a>
+            <a href="{% url 'apps.negocios:cerrar_sesion' %}">Cerrar sesión</a>
         </nav>
     </header>
 
