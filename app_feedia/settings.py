@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     
     #Apps
     'apps.encuestas',
-    'apps.negocios'
+    'apps.negocios',
+    'apps.usuarios',
 ]
 
 MIDDLEWARE = [
