@@ -15,7 +15,11 @@
         <nav>
             <a href="/">Inicio</a>
             <a href="{% url 'apps.negocios:registrar_negocio' %}">Registrar negocio</a>
-            <a href="{% url 'apps.negocios:iniciar_sesion' %}">Iniciar sesión</a>
+            <a href="{% url 'apps.usuarios:registro_usuario' %}">Registrar usuario</a>
+
+            <a href="{% url 'apps.negocios:iniciar_sesion' %}">Iniciar sesión negocio</a>
+            <a href="{% url 'apps.usuarios:usuario_login' %}">Iniciar sesión usuario</a>
+
         </nav>
     </header>
 

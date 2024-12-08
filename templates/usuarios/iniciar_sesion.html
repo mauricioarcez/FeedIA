@@ -1,0 +1,15 @@
+<!-- templates/usuarios/iniciar_sesion.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Iniciar Sesión</h2>
+  <form method="post">
+    {% csrf_token %}
+    
+    {{ form.as_p }}
+    
+    <button type="submit">Iniciar sesión</button>
+  </form>
+  
+  <p>¿No tienes cuenta? <a href="{% url 'apps.usuarios:registro_usuario' %}">Regístrate aquí</a>.</p>
+{% endblock %}

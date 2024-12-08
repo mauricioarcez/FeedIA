@@ -31,6 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['192.168.0.4', 'localhost', '127.0.0.1']
 
 
+LOGOUT_REDIRECT_URL= reverse_lazy('inicio')
 # Application definition
 
 INSTALLED_APPS = [

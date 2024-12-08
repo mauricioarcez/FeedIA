@@ -1,6 +1,10 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
 
+# usuarios/models.py
+from django.db import models
+from django.core.validators import MinLengthValidator
+
 class Usuario(models.Model):
     """
     Modelo para usuarios registrados en FeedIA.
@@ -39,9 +43,14 @@ class Usuario(models.Model):
         help_text="Puntos acumulados por el usuario."
     )
 
+    # Especificar el campo de autenticación
+    USERNAME_FIELD = 'username'  # Usamos 'username' como el campo de autenticación
+    REQUIRED_FIELDS = ['password', 'genero', 'nacimiento']  # Campos requeridos en la creación
+
     def __str__(self) -> str:
         return self.username
 
     class Meta:
         verbose_name = "Usuario"
         verbose_name_plural = "Usuarios"
+

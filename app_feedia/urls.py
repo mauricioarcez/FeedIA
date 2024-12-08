@@ -26,6 +26,7 @@ urlpatterns = [
     path("", inicio, name='inicio'),
     path('encuestas/', include('apps.encuestas.urls')),
     path("negocios/", include('apps.negocios.urls')),
+    path("usuarios/", include('apps.usuarios.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
