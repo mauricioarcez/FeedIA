@@ -1,12 +1,35 @@
-<!-- templates/inicio.html -->
 {% extends 'base.html' %}
 {% load static %}
 
-{% block titulo %}
-<title>Inicio</title>
-{% endblock %}
-
 {% block content %}
-<h1>¡Hola, bienvenido a FeedIA!</h1>
-<p>Esta es la página de inicio.</p>
+    <!-- Hero Section -->
+    <div class="hero">
+        <img src="{% static 'img/logo_feedia.png' %}" alt="FeedIA Logo" class="logo-feedia">
+        <div>
+            <h1>¡Bienvenido a FeedIA!</h1>
+            <p>Transforma la interacción cliente-negocio en valor estratégico.</p>
+            <a href="#features" class="btn-primary">Descubre más</a>
+        </div>
+    </div>
+
+    <!-- Sección de características -->
+    <div class="main-content" id="features">
+        <div class="container">
+            <h2>¿Qué ofrecemos?</h2>
+            <ul class="features">
+                <li>Feedback rápido y anónimo mediante códigos QR</li>
+                <li>Calificación de aspectos clave como servicio, comida y ambiente</li>
+                <li>Sistema de puntos canjeables para clientes</li>
+                <li>Análisis en tiempo real con inteligencia artificial</li>
+                <li>Predicción de ventas para optimizar recursos</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Llamada a la acción -->
+    <div class="cta">
+        <h2>¿Listo para mejorar tu negocio?</h2>
+        <a href="{% url 'apps.negocios:registrar_negocio' %}" class="btn btn-primary">Registra tu negocio</a>
+        <a href="{% url 'apps.usuarios:registro_usuario' %}" class="btn btn-secondary">Regístrate como usuario</a>
+    </div>
 {% endblock %}
