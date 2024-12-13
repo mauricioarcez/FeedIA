@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import sys
 from pathlib import Path
 from django.urls import reverse_lazy
+import pymysql
+pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,10 +27,12 @@ sys.path.insert(0, str(BASE_DIR / "apps"))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-iwtbaj(jqci9im0y80djd&)r+t@mu1q0mbo$69%re%ol1m5#+3'
 
+AUTH_USER_MODEL = 'usuarios.CustomUser'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.4', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 LOGOUT_REDIRECT_URL= reverse_lazy('inicio')
@@ -43,9 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     #Apps
-    'apps.encuestas',
-    'apps.negocios',
     'apps.usuarios',
+    
 ]
 
 MIDDLEWARE = [
@@ -84,8 +87,12 @@ WSGI_APPLICATION = 'app_feedia.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',  # Indicamos que se usará MySQL
+        'NAME': 'feedia',  # Nombre de la base de datos que creamos en MySQL
+        'USER': 'root',  # Tu usuario de MySQL
+        'PASSWORD': 'root',  # Tu contraseña de MySQL
+        'HOST': 'localhost',  # Si estás usando MySQL localmente, puedes dejar esto como localhost
+        'PORT': '3306',  # El puerto por defecto de MySQL
     }
 }
 
@@ -138,3 +145,4 @@ MEDIA_ROOT = BASE_DIR /"media"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

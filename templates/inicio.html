@@ -1,35 +1,38 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block subtitle %}Conocenos{% endblock %}
+
 {% block content %}
-    <!-- Hero Section -->
-    <div class="hero">
-        <img src="{% static 'img/logo_feedia.png' %}" alt="FeedIA Logo" class="logo-feedia">
-        <div>
-            <h1>¡Bienvenido a FeedIA!</h1>
-            <p>Transforma la interacción cliente-negocio en valor estratégico.</p>
-            <a href="#features" class="btn-primary">Descubre más</a>
-        </div>
-    </div>
 
-    <!-- Sección de características -->
-    <div class="main-content" id="features">
-        <div class="container">
-            <h2>¿Qué ofrecemos?</h2>
-            <ul class="features">
-                <li>Feedback rápido y anónimo mediante códigos QR</li>
-                <li>Calificación de aspectos clave como servicio, comida y ambiente</li>
-                <li>Sistema de puntos canjeables para clientes</li>
-                <li>Análisis en tiempo real con inteligencia artificial</li>
-                <li>Predicción de ventas para optimizar recursos</li>
-            </ul>
-        </div>
+  <!-- Sección de impacto startup -->
+  <section class="startup-impact">
+    <div class="text-container">
+      <h1>¡Tu Feedback al Instante!</h1>
+      <p>Completa encuestas y gana puntos en tiempo real con FeedIA. ¡Descubre cómo mejorar la experiencia de tus clientes!</p>
+      <a href="{% url 'usuarios:register' %}" class="cta-button">Regístrate Ahora</a>
     </div>
+    <div class="image-container">
+      <img src="{% static 'img/fondo_celular.png' %}" alt="Ilustración de móvil completando encuesta" />
+    </div>
+  </section>
 
-    <!-- Llamada a la acción -->
-    <div class="cta">
-        <h2>¿Listo para mejorar tu negocio?</h2>
-        <a href="{% url 'apps.negocios:registrar_negocio' %}" class="btn btn-primary">Registra tu negocio</a>
-        <a href="{% url 'apps.usuarios:registro_usuario' %}" class="btn btn-secondary">Regístrate como usuario</a>
-    </div>
+  <!-- Nueva sección para los botones de registro -->
+  <section id="register-options" class="register-options">
+    <h2>¿Estás listo para empezar?</h2>
+    <a href="{% url 'usuarios:register' %}" class="cta-button">Registra tu Negocio</a>
+    <a href="{% url 'usuarios:register' %}" class="cta-button">Regístrate como Usuario</a>
+  </section>
+
 {% endblock %}
+
+<script>
+  window.onscroll = function() {
+    var navbar = document.querySelector('.navbar');
+    if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  };
+</script>

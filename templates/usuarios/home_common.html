@@ -1,0 +1,10 @@
+{% extends 'base_logged_in.html' %}
+
+{% block subtitle %}Bienvenido, {{ user.username }}{% endblock %}
+
+{% block content %}
+    <h2>Bienvenido, Usuario Común</h2>
+    <p>¡Gracias por ser parte de FeedIA!</p>
+    <p>Aquí podrás completar encuestas y ver tus puntos.</p>
+    <p>Tus puntos actuales: {{ user.puntos }}</p>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block subtitle %}Registro de Usuario Común{% endblock %}
+
+{% block content %}
+    <h2>Registro de Usuario Común</h2>
+
+    <!-- Formulario para registrar usuario -->
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Renderiza el formulario con los campos -->
+        <button type="submit">Registrar</button>
+    </form>
+
+    <!-- Enlace para los usuarios que ya tienen cuenta -->
+    <p>¿Ya tienes cuenta? <a href="{% url 'usuarios:login' %}">Iniciar sesión</a></p>
+{% endblock %}

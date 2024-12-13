@@ -13,9 +13,7 @@
 
     <title>
         FeedIA - 
-        {% block subtitle %}
-            Inicio
-        {% endblock %}
+        {% block subtitle %}Inicio{% endblock %}
     </title>
 
     <!-- CSS -->
@@ -30,6 +28,7 @@
 
 <body>
     <header>
+        {% include 'navegacion_logged_in.html' %}  <!-- Aquí se podría poner una barra de navegación para usuarios logueados -->
     </header>
 
     <main>

@@ -24,9 +24,7 @@ from .views import inicio
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", inicio, name='inicio'),
-    path('encuestas/', include('apps.encuestas.urls')),
-    path("negocios/", include('apps.negocios.urls')),
-    path("usuarios/", include('apps.usuarios.urls')),
+    path('usuarios/', include('apps.usuarios.urls', namespace='usuarios')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
