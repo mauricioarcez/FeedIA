@@ -11,6 +11,7 @@
     <meta name="keywords" content="feedback, opiniones, IA, negocios, QR">
     <meta name="author" content="Mauricio Arce">
 
+    <link rel="stylesheet" href="{% static 'css/lateral_logged_in.css' %}">
     <title>
         FeedIA - 
         {% block subtitle %}Inicio{% endblock %}
@@ -28,8 +29,9 @@
 
 <body>
     <header>
-        {% include 'navegacion_logged_in.html' %}  <!-- Aquí se podría poner una barra de navegación para usuarios logueados -->
     </header>
+
+    {% include 'navegacion_logged_in.html' %}
 
     <main>
         {% block content %}

@@ -1,6 +1,24 @@
-<nav>
-    <ul>
-        <li><a href="{% url 'usuarios:home' %}">Inicio</a></li>
-        <li><a href="{% url 'usuarios:logout' %}">Cerrar sesión</a></li>
-    </ul>
-</nav>
+{% load static %}
+<div class="sidebar">
+    <div class="logo-container">
+        <img src="{% static 'img/Logo_feedia.png' %}" alt="Logo FeedIA" class="logo">
+    </div>
+    <nav>
+        <ul>
+            <li><a href="{% url 'usuarios:home' %}">Inicio</a></li>
+            
+            {% if user.user_type == 'common' %}
+                <!-- Opciones para el usuario común -->
+                <li><a href="#">Canjear</a></li>
+                <li><a href="#">Completar Encuesta</a></li>
+            {% elif user.user_type == 'business' %}
+                <!-- Opciones para el negocio -->
+                <li><a href="#">Reportes</a></li>
+                <li><a href="#">Administrar Puntos</a></li>
+                <li><a href="#">Generar Encuesta</a></li>
+            {% endif %}
+            
+            <li><a href="{% url 'usuarios:logout' %}">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+</div>

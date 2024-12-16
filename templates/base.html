@@ -19,17 +19,21 @@
     </title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/inicio.css' %}">
 
     <!-- Favicon -->
     <link rel="icon" href="{% static 'img/logo_feedia.png' %}" type="image/png">
 
     <!-- Fonts (si es necesario) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap">
+
+
 </head>
 
 <body>
     <header>
+        {% include 'nav.html' %}
     </header>
 
     <main>
@@ -42,6 +46,7 @@
     </footer>
 
     <!-- Extra JS -->
-    {% block extra_js %}{% endblock %}
+    {% block extra_js %}
+    {% endblock %}
 </body>
 </html>

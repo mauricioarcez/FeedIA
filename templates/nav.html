@@ -1,0 +1,14 @@
+{% load static %}
+<nav>
+    <div class="navbar-container">
+      <div class="logo">
+        <a href="{% url 'inicio' %}">
+          <img src="{% static 'img/logo_sin_fondo.png' %}" alt="Logo de FeedIA" style="height: 50px;">
+        </a>
+      </div>
+      <div class="login-button">
+        <a href="{% url 'usuarios:login' %}" style="text-decoration: none; color: #1D3C59; font-weight: bold;">Iniciar Sesión</a>
+      </div>
+    </div>
+</nav>
+  

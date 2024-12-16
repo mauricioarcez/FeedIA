@@ -1,0 +1,158 @@
+/* Defini variables de color */
+:root {
+  --color-primary: #1D3C59;  /* Azul oscuro (texto y fondos clave) */
+  --color-secondary: #00A9B8;  /* Azul suave (botones y detalles) */
+  --color-background: #F5F5F5;  /* Fondo gris claro */
+  --color-text: #333333;  /* Gris oscuro para texto principal */
+  --color-light: #ffffff;  /* Blanco suave */
+  --font-main: 'Poppins', sans-serif;  /* Fuente Poppins para toda la página */
+}
+
+/* Barra de navegación minimalista */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 20px;  /* Reducir el padding para hacerla más compacta */
+  background-color: white;  /* Fondo naranja para visualizar el tamaño */
+  height: 50px;  /* Establecer una altura fija para la barra */
+}
+
+.logo img {
+  height: 40px;  /* Ajustar el tamaño del logo */
+}
+
+.login-button a {
+  font-size: 1rem;
+  color: #1D3C59; /* Azul oscuro */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-button a:hover {
+  color: #00A9B8; /* Azul claro en hover */
+}
+
+/* Estilos para la Sección de Impacto */
+.startup-impact {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: calc(100vh - 50px);  /* Ajustamos la altura para que ocupe el resto de la pantalla después de la barra */
+  padding: 0 50px;  /* Espaciado general */
+  background-color: var(--color-background);
+}
+
+.text-container {
+  max-width: 650px;  /* Limitar el ancho del texto */
+  text-align: left;
+}
+
+.text-container h1 {
+  font-family: var(--font-main);
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.text-container p {
+  font-family: var(--font-main);
+  font-size: 1.3rem;
+  color: var(--color-text);
+  line-height: 1.8;
+  margin-bottom: 30px;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 16px 55px;
+  background-color: var(--color-secondary);
+  color: var(--color-light);
+  font-size: 1.2rem;
+  text-decoration: none;
+  border-radius: 30px;
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cta-button:hover {
+  background-color: var(--color-primary);
+  transform: translateY(-3px);
+}
+
+/* Imagen del celular, ajustamos el margen */
+.image-container {
+  flex: 1;
+  text-align: left;
+  margin-left: 40px;  /* Añadimos margen izquierdo */
+}
+
+.image-container img {
+  width: 70%;  /* La imagen ocupa la mitad del ancho */
+  height: 100vh;  /* La imagen ocupa todo el alto de la pantalla */
+  object-fit: cover;  /* Mantener la proporción sin distorsión */
+}
+
+/* Sección de impacto negocio */
+.negocio-impact {
+  display: flex;
+  flex-direction: row-reverse;  /* Cambiar el orden, imagen a la izquierda, texto a la derecha */
+  justify-content: space-between;
+  align-items: center;
+  height: calc(100vh - 50px);  /* Ajustamos la altura para que ocupe el resto de la pantalla después de la barra */
+  padding: 0 50px;
+  background-color: var(--color-background);
+}
+
+.negocio-impact .text-container {
+  max-width: 650px;
+  text-align: right;  /* Alineamos el texto a la derecha */
+}
+
+.negocio-impact .text-container h1 {
+  font-family: var(--font-main);
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.negocio-impact .text-container p {
+  font-family: var(--font-main);
+  font-size: 1.3rem;
+  color: var(--color-text);
+  line-height: 1.8;
+  margin-bottom: 30px;
+}
+
+.negocio-impact .cta-button {
+  display: inline-block;
+  padding: 16px 55px;
+  background-color: var(--color-secondary);
+  color: var(--color-light);
+  font-size: 1.2rem;
+  text-decoration: none;
+  border-radius: 30px;
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.negocio-impact .cta-button:hover {
+  background-color: var(--color-primary);
+  transform: translateY(-3px);
+}
+
+.negocio-impact .image-container {
+  flex: 1;
+  text-align: left;
+}
+
+.negocio-impact .image-container img {
+  width: 50%;
+  height: 100vh;
+  object-fit: cover;
+}

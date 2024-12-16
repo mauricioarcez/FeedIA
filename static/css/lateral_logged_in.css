@@ -1,0 +1,79 @@
+:root {
+    --color-primary: #1D3C59;  /* Azul oscuro (texto y fondos clave) */
+    --color-secondary: #00A9B8;  /* Azul suave (botones y detalles) */
+    --color-background: #F5F5F5;  /* Fondo gris claro */
+    --color-text: #333333;  /* Gris oscuro para texto principal */
+    --color-light: #ffffff;  /* Blanco suave */
+    --font-main: 'Poppins', sans-serif;  /* Fuente Poppins para toda la página */
+}
+
+/* Barra lateral minimalista */
+.sidebar {
+    width: 270px;
+    height: 100vh;
+    background-color: var(--color-primary);
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo {
+    width: 100px;
+    height: auto;
+}
+
+/* Estilo del menú */
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+nav ul li {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--color-light);
+    font-size: 18px;
+    font-family: var(--font-main);
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover para interactividad */
+nav ul li a:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-light);
+}
+
+/* Separador sutil */
+nav ul li:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Estilo para la opción de Cerrar sesión */
+nav ul li:last-child {
+    margin-top: auto;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+

@@ -1,6 +1,11 @@
 # FeedIA: Feedback y Predicción Inteligente para tu Negocio.
-supersusuario: 
-user: mauricioarcez
+
+usuariocomun:
+user: usuariocomun
+passw: 123456
+
+usuarionegocio:
+user: usuarionegocio
 passw: 123456
 
 # Descripcion del proyecto

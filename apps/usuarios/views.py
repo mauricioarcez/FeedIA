@@ -1,14 +1,10 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from .forms import CommonUserRegistrationForm, BusinessUserRegistrationForm
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import logout as auth_logout
-from django.contrib import messages
-
 
 # ---------------------------------------------------------------------------------------------------------
-
 def register(request):
     """Vista para registrar un usuario común"""
     if request.method == 'POST':
@@ -23,22 +19,18 @@ def register(request):
 
 # ---------------------------------------------------------------------------------------------------------
 
-# Login para usuario común y negocio
 def login_view(request):
+    """Vista para iniciar sesión, usando solo username"""
     if request.method == 'POST':
-        # Usar correo en lugar de username para negocio
-        username_or_email = request.POST['username']  # Usuario o correo
+        username = request.POST['username']  # Solo se usa username para autenticarse
         password = request.POST['password']
 
-        # Validamos si es un negocio o un usuario común
-        if '@' in username_or_email:  # Si contiene @ es un correo (usuario negocio)
-            user = authenticate(request, email=username_or_email, password=password)
-        else:  # Si no contiene @, se considera un usuario común con username
-            user = authenticate(request, username=username_or_email, password=password)
-
+        # Autenticación usando username
+        user = authenticate(request, username=username, password=password)
+        
         if user is not None:
-            login(request, user)
-            return redirect('usuarios:home')  # Redirige al inicio después del login exitoso
+            auth_login(request, user)  # Inicia sesión si las credenciales son correctas
+            return redirect('usuarios:home')  # Redirige al home después de login exitoso
         else:
             return render(request, 'login.html', {'error': 'Usuario o contraseña incorrectos'})
 
@@ -72,7 +64,7 @@ def register_business_user(request):
         form = BusinessUserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # Inicia sesión automáticamente después de registrar
+            auth_login(request, user)  # Inicia sesión automáticamente después de registrar
             return redirect('usuarios:home')  # Redirige al home después de un registro exitoso
     else:
         form = BusinessUserRegistrationForm()

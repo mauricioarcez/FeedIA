@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     
     #Apps
     'apps.usuarios',
-    
+    'apps.encuestas',
 ]
 
 MIDDLEWARE = [
