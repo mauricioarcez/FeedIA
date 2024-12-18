@@ -1,0 +1,118 @@
+/* Contenedor principal del formulario */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(90vh - 50px);
+  padding: 20px;
+  background-color: var(--color-background);
+}
+
+/* Estilos para el formulario */
+.login-form {
+  background-color: var(--color-light);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Título del formulario */
+.login-form h2 {
+  color: var(--color-primary);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-align: center;
+  font-family: var(--font-main);
+}
+
+/* Contenedor de cada campo del formulario */
+.form-group {
+  margin-bottom: 25px;
+}
+
+/* Estilos para las etiquetas */
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-text);
+  font-weight: 500;
+  font-size: 1rem;
+  font-family: var(--font-main);
+}
+
+/* Estilos para los campos de entrada */
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e1e1e1;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-family: var(--font-main);
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(0, 169, 184, 0.1);
+}
+
+/* Botón de envío - igualando al botón del nav */
+.submit-button {
+  width: 100%;
+  padding: 10px 25px;
+  background-color: var(--color-secondary);
+  color: var(--color-light);
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: var(--font-main);
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 169, 184, 0.2);
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.submit-button:hover {
+  background-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(29, 60, 89, 0.3);
+}
+
+/* Mensaje de error */
+.error-message {
+  background-color: #ffe5e5;
+  color: #d63031;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Enlace de registro */
+.register-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  font-family: var(--font-main);
+}
+
+.register-link a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  font-family: var(--font-main);
+  transition: color 0.3s ease;
+}
+
+.register-link a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+} 

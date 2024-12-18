@@ -10,3 +10,7 @@ pillow==11.0.0
 mysqlclient==2.2.6
 PyMySQL==1.1.1
 pyarrow==18.1.0
+transformers==4.47.1
+torch==2.5.1
+sentencepiece==0.2.0
+accelerate==1.2.1

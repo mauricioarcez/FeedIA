@@ -20,6 +20,10 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/inicio.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/register_u.css' %}">
+
+
 
     <!-- Favicon -->
     <link rel="icon" href="{% static 'img/logo_feedia.png' %}" type="image/png">
@@ -27,6 +31,7 @@
     <!-- Fonts (si es necesario) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 
 </head>
@@ -42,7 +47,40 @@
     </main>
 
     <footer>
-        <p>&copy; {% now "Y" %} FeedIA. Todos los derechos reservados.</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sobre FeedIA</h3>
+                <p>Plataforma que conecta negocios con sus clientes a través de feedback inteligente y recompensas.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Desarrollado por</h3>
+                <p class="author">Mauricio Arce</p>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/mauricioarcez/" target="_blank" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://github.com/mauricioarcez" target="_blank" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://www.instagram.com/mauricioarcez/" target="_blank" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul>
+                    <li><i class="far fa-envelope"></i> mauricioarcez23@gmail.com</li>
+                    <li><i class="fas fa-phone"></i> +54 3624 822158</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} FeedIA. Todos los derechos reservados.</p>
+        </div>
     </footer>
 
     <!-- Extra JS -->
