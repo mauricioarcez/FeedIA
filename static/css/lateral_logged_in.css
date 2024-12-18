@@ -77,3 +77,20 @@ nav ul li:last-child {
     font-weight: bold;
 }
 
+/* Ajuste para el contenido principal */
+main {
+    margin-left: 270px; /* Mismo ancho que la barra lateral */
+    padding: 20px;
+    min-height: 100vh;
+    background-color: var(--color-background);
+}
+
+/* Ajuste para el footer si existe */
+footer {
+    margin-left: 270px;
+    padding: 20px;
+    text-align: center;
+    background-color: var(--color-light);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+

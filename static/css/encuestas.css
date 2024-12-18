@@ -1,0 +1,132 @@
+/* Estilos para la lista de encuestas */
+.encuestas-list {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.encuesta-item {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.encuesta-item:hover {
+    transform: translateY(-5px);
+}
+
+.encuesta-item h3 {
+    color: var(--color-primary);
+    margin-bottom: 15px;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
+}
+
+.badge.completed {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge.pending {
+    background-color: #ffc107;
+    color: #000;
+}
+
+/* Estilos para el formulario y contenedores */
+.form-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: var(--color-light);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.info-section {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.info-section h3 {
+    color: var(--color-primary);
+    margin-bottom: 15px;
+}
+
+.info-section ul {
+    padding-left: 20px;
+}
+
+.info-section li {
+    margin-bottom: 10px;
+    color: var(--color-text);
+}
+
+/* Estilos para el formulario de encuesta */
+.encuesta-form .form-group {
+    margin-bottom: 20px;
+}
+
+.encuesta-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.encuesta-form input[type="number"],
+.encuesta-form textarea,
+.encuesta-form select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.encuesta-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-text {
+    font-size: 0.875em;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+.star-rating {
+    display: inline-flex;
+    gap: 5px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.star {
+    color: #ddd;
+    transition: color 0.2s ease;
+}
+
+.star.hover {
+    color: #ffd700;
+}
+
+.star.active {
+    color: #ffd700;
+} 

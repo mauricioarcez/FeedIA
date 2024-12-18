@@ -5,17 +5,18 @@ from .models import Encuesta
 class EncuestaForm(forms.ModelForm):
     class Meta:
         model = Encuesta
-        fields = ['calificacion_general', 'calificacion_servicio', 'recomendaciones']
+        fields = ['experiencia_general', 'atencion_servicio', 'recomendaciones', 'tipo_cliente', 'respuesta_anonima']
         widgets = {
-            'calificacion_general': forms.NumberInput(attrs={
-                'min': 1, 'max': 10, 'step': 1, 'class': 'form-control',
-                'placeholder': 'Califica tu experiencia (1-10)'}),
-            'calificacion_servicio': forms.NumberInput(attrs={
-                'min': 1, 'max': 10, 'step': 1, 'class': 'form-control',
-                'placeholder': 'Califica el servicio (1-10)'}),
+            'experiencia_general': forms.HiddenInput(),
+            'atencion_servicio': forms.HiddenInput(),
             'recomendaciones': forms.Textarea(attrs={
-                'class': 'form-control', 'placeholder': 'Escribe tus recomendaciones o mejoras (máximo 500 caracteres)',
-                'rows': 4, 'maxlength': 500}),
+                'class': 'form-control',
+                'placeholder': 'Escribe tus recomendaciones o mejoras (máximo 500 caracteres)',
+                'rows': 4,
+                'maxlength': 500
+            }),
+            'tipo_cliente': forms.Select(attrs={'class': 'form-control'}),
+            'respuesta_anonima': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
 
     def save(self, commit=True):

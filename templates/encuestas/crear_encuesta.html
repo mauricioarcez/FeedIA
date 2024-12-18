@@ -1,0 +1,33 @@
+{% extends 'base_logged_in.html' %}
+
+{% block subtitle %}Crear Encuesta{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Generar Nueva Encuesta</h2>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="info-section">
+            <h3>Información importante:</h3>
+            <ul>
+                <li>Se generará un código único de 4 dígitos</li>
+                <li>El código será válido por 24 horas</li>
+                <li>Comparte el código con tus clientes para que completen la encuesta</li>
+                <li>Podrás ver los resultados en la sección de reportes</li>
+            </ul>
+        </div>
+        <button type="submit" class="btn btn-primary">Generar Nueva Encuesta</button>
+    </form>
+</div>
+{% endblock %} 

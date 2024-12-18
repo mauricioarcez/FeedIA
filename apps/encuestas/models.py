@@ -1,6 +1,6 @@
 import random
 from django.db import models
-from usuarios.models import CustomUser
+from apps.usuarios.models import CustomUser
 from django.utils import timezone
 from datetime import timedelta
 
@@ -9,7 +9,7 @@ class Encuesta(models.Model):
         CustomUser,
         on_delete=models.CASCADE,
         related_name='encuestas_recibidas',
-        limit_choices_to={'user_type': 'business'}  # Limita a usuarios tipo negocio
+        limit_choices_to={'user_type': 'business'}
     )
     usuario = models.ForeignKey(
         CustomUser,
@@ -19,8 +19,8 @@ class Encuesta(models.Model):
         null=True,
         blank=True
     )
-    experiencia_general = models.IntegerField()  # Escala de 1-10
-    atencion_servicio = models.IntegerField()  # Escala de 1-10
+    experiencia_general = models.IntegerField(null=True, blank=True)
+    atencion_servicio = models.IntegerField(null=True, blank=True)
     recomendaciones = models.TextField(max_length=500, blank=True, null=True)
     tipo_cliente = models.CharField(
         max_length=20,
@@ -28,13 +28,15 @@ class Encuesta(models.Model):
             ("primera", "Primera vez"),
             ("frecuente", "Cliente frecuente"),
             ("ocasional", "Cliente ocasional"),
-        ]
+        ],
+        null=True,
+        blank=True
     )
     respuesta_anonima = models.BooleanField(default=False)
     fecha_respuesta = models.DateTimeField(auto_now_add=True)
-    codigo_temporal = models.CharField(max_length=4, blank=True, null=True)  # Código único temporal
-    encuesta_completada = models.BooleanField(default=False)  # Indica si la encuesta ya fue completada
-    fecha_expiracion = models.DateTimeField(null=True, blank=True)  # Fecha de expiración del código
+    codigo_temporal = models.CharField(max_length=4, blank=True, null=True)
+    encuesta_completada = models.BooleanField(default=False)
+    fecha_expiracion = models.DateTimeField(null=True, blank=True)
 
     def generar_codigo(self):
         """Genera un código aleatorio de 4 dígitos para cada negocio."""

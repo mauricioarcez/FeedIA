@@ -10,14 +10,12 @@
             {% if user.user_type == 'common' %}
                 <!-- Opciones para el usuario común -->
                 <li><a href="#">Canjear</a></li>
-                <!-- Redirigir al usuario común a la página de completar encuesta -->
-                <li><a href="{% url 'apps.encuestas.completar_encuesta' codigo_usuario=user.codigo_encuesta %}">Completar Encuesta</a></li>
+                <li><a href="{% url 'encuestas:ingresar_codigo' %}">Completar Encuesta</a></li>
             {% elif user.user_type == 'business' %}
                 <!-- Opciones para el negocio -->
                 <li><a href="#">Reportes</a></li>
-                <li><a href="#">Administrar Puntos</a></li>
-                <!-- Redirigir al negocio a la página de crear encuesta -->
-                <li><a href="{% url 'apps.encuestas.crear_encuesta' %}">Generar Encuesta</a></li>
+                <li><a href="{% url 'encuestas:ver_encuestas' %}">Ver Encuestas</a></li>
+                <li><a href="{% url 'encuestas:crear_encuesta' %}">Generar Encuesta</a></li>
             {% endif %}
             
             <li><a href="{% url 'usuarios:logout' %}">Cerrar sesión</a></li>

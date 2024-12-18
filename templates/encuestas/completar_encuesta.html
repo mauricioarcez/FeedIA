@@ -1,0 +1,109 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block subtitle %}Completar Encuesta{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Completar Encuesta</h2>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="info-section">
+        <p><strong>Negocio: </strong>{{ encuesta.negocio.nombre_negocio }}</p>
+        <p><strong>Fecha de creación: </strong>{{ encuesta.fecha_respuesta|date:"d/m/Y H:i" }}</p>
+    </div>
+
+    <form method="POST" class="encuesta-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label>Experiencia General</label>
+            <div class="star-rating" data-rating="0" data-input="id_experiencia_general">
+                {% for i in "12345678910" %}
+                <span class="star">★</span>
+                {% endfor %}
+            </div>
+            {{ form.experiencia_general }}
+        </div>
+
+        <div class="form-group">
+            <label>Atención del Servicio</label>
+            <div class="star-rating" data-rating="0" data-input="id_atencion_servicio">
+                {% for i in "12345678910" %}
+                <span class="star">★</span>
+                {% endfor %}
+            </div>
+            {{ form.atencion_servicio }}
+        </div>
+
+        {% for field in form %}
+            {% if field.name not in 'experiencia_general,atencion_servicio' %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                <div class="alert alert-danger">
+                    {{ field.errors }}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Enviar Encuesta</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const starContainers = document.querySelectorAll('.star-rating');
+    
+    starContainers.forEach(container => {
+        const stars = container.querySelectorAll('.star');
+        const inputId = container.dataset.input;
+        const hiddenInput = document.getElementById(inputId);
+        
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                const rating = index + 1;
+                container.dataset.rating = rating;
+                hiddenInput.value = rating;
+                
+                stars.forEach((s, i) => {
+                    s.classList.toggle('active', i < rating);
+                });
+            });
+            
+            star.addEventListener('mouseover', () => {
+                const rating = index + 1;
+                stars.forEach((s, i) => {
+                    s.classList.toggle('hover', i < rating);
+                });
+            });
+        });
+        
+        container.addEventListener('mouseout', () => {
+            const rating = parseInt(container.dataset.rating) || 0;
+            stars.forEach((s, i) => {
+                s.classList.remove('hover');
+                s.classList.toggle('active', i < rating);
+            });
+        });
+    });
+});
+</script>
+{% endblock %} 

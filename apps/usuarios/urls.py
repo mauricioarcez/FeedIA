@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-app_name = 'apps.usuarios'
+app_name = 'usuarios'
 
 urlpatterns = [
     path('register/', views.register, name='register'), 

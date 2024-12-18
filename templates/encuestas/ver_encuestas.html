@@ -1,0 +1,42 @@
+{% extends 'base_logged_in.html' %}
+
+{% block subtitle %}Ver Encuestas{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Encuestas Generadas</h2>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if encuestas %}
+        <div class="encuestas-list">
+            {% for encuesta in encuestas %}
+                <div class="encuesta-item">
+                    <h3>Encuesta #{{ encuesta.id }}</h3>
+                    <p><strong>Código:</strong> {{ encuesta.codigo_temporal }}</p>
+                    <p><strong>Fecha de creación:</strong> {{ encuesta.fecha_respuesta|date:"d/m/Y H:i" }}</p>
+                    <p><strong>Expira:</strong> {{ encuesta.fecha_expiracion|date:"d/m/Y H:i" }}</p>
+                    <p><strong>Estado:</strong> 
+                        {% if encuesta.encuesta_completada %}
+                            <span class="badge completed">Completada</span>
+                        {% else %}
+                            <span class="badge pending">Pendiente</span>
+                        {% endif %}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No hay encuestas generadas aún.</p>
+        <a href="{% url 'encuestas:crear_encuesta' %}" class="btn btn-primary">Generar Nueva Encuesta</a>
+    {% endif %}
+</div>
+{% endblock %} 
