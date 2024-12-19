@@ -10,11 +10,22 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import environ
+import os
 import sys
 from pathlib import Path
 from django.urls import reverse_lazy
 import pymysql
 pymysql.install_as_MySQLdb()
+
+# Inicializar environ
+env = environ.Env(
+    DEBUG=(bool, True),
+    ENVIRONMENT=(str, 'local')
+)
+
+# Leer archivo .env
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,17 +36,18 @@ sys.path.insert(0, str(BASE_DIR / "apps"))
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-iwtbaj(jqci9im0y80djd&)r+t@mu1q0mbo$69%re%ol1m5#+3'
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-iwtbaj(jqci9im0y80djd&)r+t@mu1q0mbo$69%re%ol1m5#+3')
 
 AUTH_USER_MODEL = 'usuarios.CustomUser'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
+ENVIRONMENT = env('ENVIRONMENT')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
+LOGOUT_REDIRECT_URL = reverse_lazy('inicio')
 
-LOGOUT_REDIRECT_URL= reverse_lazy('inicio')
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,13 +58,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    #Apps
+    # Third party apps
+    'django_redis',
+    'whitenoise.runserver_nostatic',
+    
+    # Local apps
     'apps.usuarios',
     'apps.encuestas',
+    'apps.utils',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,12 +105,12 @@ WSGI_APPLICATION = 'app_feedia.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Indicamos que se usará MySQL
-        'NAME': 'feedia',  # Nombre de la base de datos que creamos en MySQL
-        'USER': 'root',  # Tu usuario de MySQL
-        'PASSWORD': 'root',  # Tu contraseña de MySQL
-        'HOST': 'localhost',  # Si estás usando MySQL localmente, puedes dejar esto como localhost
-        'PORT': '3306',  # El puerto por defecto de MySQL
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env('DB_NAME', default='feedia'),
+        'USER': env('DB_USER', default='root'),
+        'PASSWORD': env('DB_PASSWORD', default='root'),
+        'HOST': env('DB_HOST', default='localhost'),
+        'PORT': env('DB_PORT', default='3306'),
     }
 }
 
@@ -145,4 +163,30 @@ MEDIA_ROOT = BASE_DIR /"media"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Cache y Redis
+if ENVIRONMENT == 'docker':
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': env('REDIS_URL', default='redis://redis:6379/0'),
+        }
+    }
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        }
+    }
+
+# Celery
+if ENVIRONMENT == 'docker':
+    CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://redis:6379/0')
+    CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_TIMEZONE = TIME_ZONE
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 

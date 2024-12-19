@@ -3,6 +3,8 @@ from django.db import models
 from apps.usuarios.models import CustomUser
 from django.utils import timezone
 from datetime import timedelta
+from .ai import SentimentAnalyzer
+import logging
 
 class Encuesta(models.Model):
     negocio = models.ForeignKey(
@@ -37,6 +39,8 @@ class Encuesta(models.Model):
     codigo_temporal = models.CharField(max_length=4, blank=True, null=True)
     encuesta_completada = models.BooleanField(default=False)
     fecha_expiracion = models.DateTimeField(null=True, blank=True)
+    sentimiento = models.CharField(max_length=50, blank=True, null=True)
+    confianza_sentimiento = models.FloatField(null=True, blank=True)
 
     def generar_codigo(self):
         """Genera un código aleatorio de 4 dígitos para cada negocio."""
@@ -61,3 +65,22 @@ class Encuesta(models.Model):
         """Marca el código como usado, cambiando la fecha de expiración a ahora."""
         self.fecha_expiracion = timezone.now()  # Marcar el código como usado al expirar
         self.save()
+
+    def analizar_sentimiento(self):
+        """Analiza el sentimiento de las recomendaciones usando IA."""
+        if not self.recomendaciones:
+            return None
+        
+        try:
+            analyzer = SentimentAnalyzer()
+            resultado = analyzer.analyze_with_cache([self.recomendaciones])[0]
+            
+            # Guardamos el resultado del análisis
+            self.sentimiento = resultado['label']
+            self.confianza_sentimiento = resultado['score']
+            self.save()
+            
+            return resultado
+        except Exception as e:
+            logging.error(f"Error al analizar sentimiento: {str(e)}")
+            return None

@@ -1,0 +1,27 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+
+# Desarrollo local
+.vscode/
+.idea/
+*.sqlite3
+media/
+static/
+node_modules/
+
+# Logs
+*.log
+
+# Otros
+.DS_Store 

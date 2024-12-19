@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=app_feedia.settings
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/feedia
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=feedia
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  celery:
+    build: .
+    command: celery -A feedia worker -l INFO
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=feedia.settings
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/feedia
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    depends_on:
+      - web
+      - redis
+
+volumes:
+  postgres_data:
+  redis_data: 
