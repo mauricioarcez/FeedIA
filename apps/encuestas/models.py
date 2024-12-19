@@ -5,54 +5,77 @@ from django.utils import timezone
 from datetime import timedelta
 from .ai import SentimentAnalyzer
 import logging
+import string
 
-class Encuesta(models.Model):
+class Empleado(models.Model):
     negocio = models.ForeignKey(
-        CustomUser,
+        'usuarios.CustomUser',
         on_delete=models.CASCADE,
-        related_name='encuestas_recibidas',
+        related_name='empleados',
         limit_choices_to={'user_type': 'business'}
     )
+    nombre = models.CharField(max_length=100)
+    apellido = models.CharField(max_length=100)
+    activo = models.BooleanField(default=True)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.nombre} {self.apellido}"
+
+    class Meta:
+        ordering = ['nombre', 'apellido']
+        unique_together = ['negocio', 'nombre', 'apellido']
+
+class Encuesta(models.Model):
+    TIPO_CLIENTE_CHOICES = [
+        ('nuevo', 'Nuevo'),
+        ('recurrente', 'Recurrente'),
+        ('ocasional', 'Ocasional'),
+    ]
+
     usuario = models.ForeignKey(
-        CustomUser,
+        'usuarios.CustomUser',
         on_delete=models.CASCADE,
-        related_name='encuestas_realizadas',
-        limit_choices_to={'user_type': 'common'},
-        null=True,
-        blank=True
+        related_name='encuestas_creadas'
     )
-    experiencia_general = models.IntegerField(null=True, blank=True)
-    atencion_servicio = models.IntegerField(null=True, blank=True)
-    recomendaciones = models.TextField(max_length=500, blank=True, null=True)
+    negocio = models.ForeignKey(
+        'usuarios.CustomUser',
+        on_delete=models.CASCADE,
+        related_name='encuestas_negocio'
+    )
+    codigo_temporal = models.CharField(max_length=4, unique=True, null=True, blank=True)
+    fecha_respuesta = models.DateTimeField(auto_now_add=True)
+    fecha_expiracion = models.DateTimeField()
+    encuesta_completada = models.BooleanField(default=False)
+    sentimiento = models.CharField(max_length=10, null=True, blank=True)
+    
+    # Campos nuevos para el formulario
     tipo_cliente = models.CharField(
         max_length=20,
-        choices=[
-            ("primera", "Primera vez"),
-            ("frecuente", "Cliente frecuente"),
-            ("ocasional", "Cliente ocasional"),
-        ],
+        choices=TIPO_CLIENTE_CHOICES,
         null=True,
         blank=True
     )
     respuesta_anonima = models.BooleanField(default=False)
-    fecha_respuesta = models.DateTimeField(auto_now_add=True)
-    codigo_temporal = models.CharField(max_length=4, blank=True, null=True)
-    encuesta_completada = models.BooleanField(default=False)
-    fecha_expiracion = models.DateTimeField(null=True, blank=True)
-    sentimiento = models.CharField(max_length=50, blank=True, null=True)
-    confianza_sentimiento = models.FloatField(null=True, blank=True)
+    experiencia_general = models.IntegerField(null=True, blank=True)
+    atencion_servicio = models.IntegerField(null=True, blank=True)
+    recomendaciones = models.TextField(null=True, blank=True)
+    empleado = models.ForeignKey(
+        Empleado,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='encuestas'
+    )
 
-    def generar_codigo(self):
-        """Genera un código aleatorio de 4 dígitos para cada negocio."""
-        # Asegurarse de que el código sea único dentro del negocio
+    def generar_codigo_temporal(self):
+        """Genera un código único de 4 dígitos"""
         while True:
-            self.codigo_temporal = str(random.randint(1000, 9999))
-            # Verificar que el código no exista ya en este negocio
-            if not Encuesta.objects.filter(codigo_temporal=self.codigo_temporal, negocio=self.negocio).exists():
+            codigo = ''.join(random.choices(string.digits, k=4))
+            if not Encuesta.objects.filter(codigo_temporal=codigo).exists():
+                self.codigo_temporal = codigo
+                self.save()
                 break
-        # Establecer una fecha de expiración, por ejemplo 24 horas después de la creación
-        self.fecha_expiracion = timezone.now() + timedelta(hours=24)
-        self.save()
 
     def __str__(self):
         return f"Encuesta para {self.negocio.nombre_negocio} por {self.usuario} - {self.fecha_respuesta.date()}"
@@ -74,13 +97,14 @@ class Encuesta(models.Model):
         try:
             analyzer = SentimentAnalyzer()
             resultado = analyzer.analyze_with_cache([self.recomendaciones])[0]
+            print(f"Analizando sentimiento para: {self.recomendaciones}")
+            print(f"Resultado obtenido: {resultado}")
             
-            # Guardamos el resultado del análisis
+            # Guardar el resultado del análisis
             self.sentimiento = resultado['label']
-            self.confianza_sentimiento = resultado['score']
             self.save()
             
             return resultado
         except Exception as e:
-            logging.error(f"Error al analizar sentimiento: {str(e)}")
+            print(f"Error al analizar sentimiento: {str(e)}")
             return None

@@ -1,0 +1,214 @@
+/* Variables de estilo consistentes */
+:root {
+    --color-primary: #1D3C59;
+    --color-secondary: #00A9B8;
+    --color-background: #F5F5F5;
+    --color-text: #333333;
+    --color-light: #ffffff;
+    --font-main: 'Poppins', sans-serif;
+}
+
+.encuestas-dashboard {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: var(--font-main);
+}
+
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h2 {
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    font-family: var(--font-main);
+}
+
+.stats-container {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--color-light);
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.stat-card i {
+    font-size: 2rem;
+    color: var(--color-secondary);
+    margin-bottom: 0.8rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    font-family: var(--font-main);
+}
+
+.stat-label {
+    color: var(--color-text);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 0.3rem;
+}
+
+.encuestas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.encuesta-card {
+    background: var(--color-light);
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.encuesta-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    padding: 1.2rem;
+    background: var(--color-background);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+
+.encuesta-id {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: var(--font-main);
+}
+
+.status-badge.completed {
+    background: var(--color-secondary);
+    color: var(--color-light);
+}
+
+.status-badge.pending {
+    background: #f1c40f;
+    color: var(--color-text);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+    font-size: 0.95rem;
+}
+
+.info-row i {
+    width: 20px;
+    margin-right: 1rem;
+    color: var(--color-secondary);
+}
+
+.sentiment-container {
+    margin-top: 1.2rem;
+    text-align: center;
+}
+
+.sentiment-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.2rem;
+    border-radius: 25px;
+    font-weight: 500;
+    font-family: var(--font-main);
+}
+
+.sentiment-badge i {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.sentiment-badge.POS {
+    background: var(--color-secondary);
+    color: var(--color-light);
+}
+
+.sentiment-badge.NEG {
+    background: #e74c3c;
+    color: var(--color-light);
+}
+
+.btn-create {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 25px;
+    background: var(--color-secondary);
+    color: var(--color-light);
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    font-family: var(--font-main);
+    box-shadow: 0 3px 10px rgba(0, 169, 184, 0.2);
+    transition: all 0.3s ease;
+}
+
+.btn-create:hover {
+    background: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(29, 60, 89, 0.3);
+}
+
+.btn-create i {
+    margin-right: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .encuestas-dashboard {
+        padding: 1rem;
+    }
+
+    .stats-container {
+        flex-direction: column;
+    }
+
+    .encuestas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-header h2 {
+        font-size: 2rem;
+    }
+}

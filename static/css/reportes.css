@@ -1,0 +1,117 @@
+/* Variables de estilo consistentes */
+:root {
+    --color-primary: #1D3C59;
+    --color-secondary: #00A9B8;
+    --color-background: #F5F5F5;
+    --color-text: #333333;
+    --color-light: #ffffff;
+    --font-main: 'Poppins', sans-serif;
+    --sidebar-width: 280px; /* Ancho de la barra lateral */
+}
+
+.reportes-dashboard {
+    height: 100vh;
+    margin-left: var(--sidebar-width);
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* 75% gráficos, 25% ranking */
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--color-background);
+}
+
+/* Grid de gráficos */
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+    grid-template-rows: repeat(3, 1fr); /* 3 filas */
+    gap: 1rem;
+    height: 100%;
+}
+
+.chart-wrapper {
+    background: var(--color-light);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Importante para el scroll */
+}
+
+/* Tabla de ranking */
+.ranking-section {
+    background: var(--color-light);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 0.75rem;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.ranking-table th,
+.ranking-table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.ranking-table th {
+    position: sticky;
+    top: 0;
+    background: var(--color-light);
+    font-weight: 600;
+    color: var(--color-primary);
+    z-index: 1;
+    font-size: 0.75rem;
+}
+
+.sentiment-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.sentiment-positive {
+    background-color: rgba(0, 169, 184, 0.1);
+    color: var(--color-secondary);
+}
+
+.sentiment-negative {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+}
+
+@media (max-width: 1400px) {
+    .charts-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas más pequeñas */
+    }
+}
+
+@media (max-width: 1024px) {
+    .reportes-dashboard {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+    
+    .charts-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .reportes-dashboard {
+        margin-left: 70px;
+        padding: 0.5rem;
+    }
+    
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
+} 

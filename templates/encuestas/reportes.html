@@ -1,0 +1,66 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block subtitle %}Reportes{% endblock %}
+
+{% block content %}
+<div class="reportes-dashboard">
+    <div class="charts-container">
+        <div class="chart-wrapper">
+            <canvas id="sentimientosChart" 
+                data-pos="{{ total_sentimientos.POS }}" 
+                data-neg="{{ total_sentimientos.NEG }}">
+            </canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('sentimientosChart');
+    const sentimientosData = {
+        POS: parseInt(canvas.dataset.pos) || 0,
+        NEG: parseInt(canvas.dataset.neg) || 0
+    };
+
+    const ctx = canvas.getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Sentimientos'],
+            datasets: [{
+                label: 'Positivas',
+                data: [sentimientosData.POS],
+                backgroundColor: '#00A9B8'
+            }, {
+                label: 'Negativas',
+                data: [sentimientosData.NEG],
+                backgroundColor: '#e74c3c'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { stacked: true },
+                y: { 
+                    stacked: true,
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Distribución de Sentimientos'
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 

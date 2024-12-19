@@ -11,21 +11,26 @@
     <meta name="keywords" content="feedback, opiniones, IA, negocios, QR">
     <meta name="author" content="Mauricio Arce">
 
-    <link rel="stylesheet" href="{% static 'css/lateral_logged_in.css' %}">
-    <link rel="stylesheet" href="{% static 'css/encuestas.css' %}">
     <title>
         FeedIA - 
         {% block subtitle %}Inicio{% endblock %}
     </title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lateral_logged_in.css' %}">
+    <link rel="stylesheet" href="{% static 'css/encuestas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/ver_encuestas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/empleados.css' %}">
+    <link rel="stylesheet" href="{% static 'css/crear_encuesta.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reportes.css' %}">
 
     <!-- Favicon -->
     <link rel="icon" href="{% static 'img/logo_feedia.png' %}" type="image/png">
 
     <!-- Fonts (si es necesario) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -37,6 +42,9 @@
     <main>
         {% block content %}
         {% endblock %}
+
+        {% block extra_js %}
+        {% endblock %}
     </main>
 
     <footer>
@@ -44,6 +52,6 @@
     </footer>
 
     <!-- Extra JS -->
-    {% block extra_js %}{% endblock %}
+    
 </body>
 </html>

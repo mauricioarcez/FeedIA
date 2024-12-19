@@ -1,0 +1,167 @@
+/* Variables de estilo consistentes */
+:root {
+    --color-primary: #1D3C59;
+    --color-secondary: #00A9B8;
+    --color-background: #F5F5F5;
+    --color-text: #333333;
+    --color-light: #ffffff;
+    --font-main: 'Poppins', sans-serif;
+}
+
+/* Contenedor principal */
+.form-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 2rem;
+    background-color: var(--color-light);
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    font-family: var(--font-main);
+}
+
+.form-container h2 {
+    color: var(--color-primary);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+/* Sección de información */
+.info-section {
+    background-color: var(--color-background);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+}
+
+.info-section h3 {
+    color: var(--color-primary);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.info-section ul {
+    padding-left: 1.5rem;
+    list-style-type: none;
+}
+
+.info-section li {
+    margin-bottom: 0.8rem;
+    color: var(--color-text);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.info-section li:before {
+    content: '•';
+    color: var(--color-secondary);
+    font-size: 1.5rem;
+    position: absolute;
+    left: 0;
+    top: -0.2rem;
+}
+
+/* Formulario */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.8rem;
+    color: var(--color-text);
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+/* Select de empleados */
+.form-control {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e1e1e1;
+    border-radius: 10px;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    background-color: white;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 3px rgba(0, 169, 184, 0.1);
+}
+
+/* Botón de submit */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 1rem;
+    background: var(--color-secondary);
+    color: var(--color-light);
+    border: none;
+    border-radius: 25px;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 169, 184, 0.2);
+}
+
+.btn-primary:hover {
+    background: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(29, 60, 89, 0.3);
+}
+
+/* Mensajes de alerta */
+.messages {
+    margin-bottom: 1.5rem;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #27ae60;
+    border: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+.alert-error {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #c0392b;
+    border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-container {
+        margin: 10px;
+        padding: 1.5rem;
+    }
+
+    .form-container h2 {
+        font-size: 2rem;
+    }
+
+    .info-section {
+        padding: 1rem;
+    }
+
+    .info-section h3 {
+        font-size: 1.2rem;
+    }
+}

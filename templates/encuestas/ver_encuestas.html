@@ -1,13 +1,28 @@
 {% extends 'base_logged_in.html' %}
+{% load static %}
 
 {% block subtitle %}Ver Encuestas{% endblock %}
 
 {% block content %}
-<div class="form-container">
-    <h2>Encuestas Generadas</h2>
-    
+<div class="encuestas-dashboard">
+    <header class="dashboard-header">
+        <h2>Panel de Encuestas</h2>
+        <div class="stats-container">
+            <div class="stat-card">
+                <i class="fas fa-poll"></i>
+                <span class="stat-value">{{ total_encuestas }}</span>
+                <span class="stat-label">Total Encuestas</span>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle"></i>
+                <span class="stat-value">{{ encuestas_completadas }}</span>
+                <span class="stat-label">Completadas</span>
+            </div>
+        </div>
+    </header>
+
     {% if messages %}
-    <div class="messages">
+    <div class="messages-container">
         {% for message in messages %}
         <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
             {{ message }}
@@ -17,26 +32,53 @@
     {% endif %}
 
     {% if encuestas %}
-        <div class="encuestas-list">
-            {% for encuesta in encuestas %}
-                <div class="encuesta-item">
-                    <h3>Encuesta #{{ encuesta.id }}</h3>
-                    <p><strong>Código:</strong> {{ encuesta.codigo_temporal }}</p>
-                    <p><strong>Fecha de creación:</strong> {{ encuesta.fecha_respuesta|date:"d/m/Y H:i" }}</p>
-                    <p><strong>Expira:</strong> {{ encuesta.fecha_expiracion|date:"d/m/Y H:i" }}</p>
-                    <p><strong>Estado:</strong> 
-                        {% if encuesta.encuesta_completada %}
-                            <span class="badge completed">Completada</span>
-                        {% else %}
-                            <span class="badge pending">Pendiente</span>
-                        {% endif %}
-                    </p>
+    <div class="encuestas-grid">
+        {% for encuesta in encuestas %}
+        <div class="encuesta-card {% if encuesta.encuesta_completada %}completed{% endif %}">
+            <div class="card-header">
+                <span class="encuesta-id">#{{ encuesta.id }}</span>
+                <span class="status-badge {% if encuesta.encuesta_completada %}completed{% else %}pending{% endif %}">
+                    {{ encuesta.encuesta_completada|yesno:"Completada,Pendiente" }}
+                </span>
+            </div>
+            
+            <div class="card-body">
+                <div class="info-row">
+                    <i class="fas fa-key"></i>
+                    <span>Código: {{ encuesta.codigo_temporal }}</span>
                 </div>
-            {% endfor %}
+                <div class="info-row">
+                    <i class="fas fa-calendar"></i>
+                    <span>Creada: {{ encuesta.fecha_respuesta|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div class="info-row">
+                    <i class="fas fa-clock"></i>
+                    <span>Expira: {{ encuesta.fecha_expiracion|date:"d/m/Y H:i" }}</span>
+                </div>
+                {% if encuesta.encuesta_completada and encuesta.sentimiento %}
+                <div class="sentiment-container">
+                    <span class="sentiment-badge {{ encuesta.sentimiento }}">
+                        <i class="fas {% if encuesta.sentimiento == 'POS' %}fa-smile{% else %}fa-frown{% endif %}"></i>
+                        {{ encuesta.sentimiento }}
+                    </span>
+                </div>
+                {% endif %}
+            </div>
         </div>
+        {% endfor %}
+    </div>
     {% else %}
+    <div class="empty-state">
+        <i class="fas fa-clipboard-list"></i>
         <p>No hay encuestas generadas aún.</p>
-        <a href="{% url 'encuestas:crear_encuesta' %}" class="btn btn-primary">Generar Nueva Encuesta</a>
+    </div>
     {% endif %}
+    
+    <div class="action-buttons">
+        <a href="{% url 'encuestas:crear_encuesta' %}" class="btn-create">
+            <i class="fas fa-plus"></i>
+            Generar Nueva Encuesta
+        </a>
+    </div>
 </div>
 {% endblock %} 

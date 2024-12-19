@@ -1,0 +1,58 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block subtitle %}Administrar Empleados{% endblock %}
+
+{% block content %}
+<div class="empleados-dashboard">
+    <header class="dashboard-header">
+        <h2>Administrar Empleados</h2>
+    </header>
+
+    <div class="empleados-grid">
+        <div class="form-section">
+            <h3>Agregar Empleado</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.nombre.label_tag }}
+                    {{ form.nombre }}
+                </div>
+                <div class="form-group">
+                    {{ form.apellido.label_tag }}
+                    {{ form.apellido }}
+                </div>
+                <button type="submit" class="btn-create">
+                    <i class="fas fa-plus"></i>
+                    Agregar Empleado
+                </button>
+            </form>
+        </div>
+
+        <div class="empleados-list">
+            <h3>Lista de Empleados</h3>
+            {% if empleados %}
+                {% for empleado in empleados %}
+                <div class="empleado-card {% if not empleado.activo %}inactive{% endif %}">
+                    <div class="empleado-info">
+                        <h4>{{ empleado.nombre }} {{ empleado.apellido }}</h4>
+                        <span class="status-badge {% if empleado.activo %}active{% else %}inactive{% endif %}">
+                            {{ empleado.activo|yesno:"Activo,Inactivo" }}
+                        </span>
+                    </div>
+                    <div class="empleado-actions">
+                        <a href="{% url 'encuestas:toggle_empleado' empleado.id %}" 
+                           class="btn-toggle {% if empleado.activo %}deactivate{% else %}activate{% endif %}">
+                            <i class="fas {% if empleado.activo %}fa-user-slash{% else %}fa-user-check{% endif %}"></i>
+                            {{ empleado.activo|yesno:"Desactivar,Activar" }}
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-state">No hay empleados registrados</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

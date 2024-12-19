@@ -165,17 +165,18 @@ MEDIA_ROOT = BASE_DIR /"media"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Cache y Redis
-if ENVIRONMENT == 'docker':
+if ENVIRONMENT == 'production':
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-            'LOCATION': env('REDIS_URL', default='redis://redis:6379/0'),
+            'LOCATION': env('REDIS_URL', default='redis://127.0.0.1:6379/1'),
         }
     }
 else:
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
         }
     }
 
@@ -189,4 +190,30 @@ if ENVIRONMENT == 'docker':
     CELERY_TIMEZONE = TIME_ZONE
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'apps.encuestas': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+ 
+# Configuración de rendimiento para ML
+import torch
+if torch.cuda.is_available():
+    torch.backends.cudnn.benchmark = True
 

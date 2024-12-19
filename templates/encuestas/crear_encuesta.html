@@ -18,6 +18,17 @@
 
     <form method="POST">
         {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="empleado">Seleccionar Empleado:</label>
+            <select name="empleado" id="empleado" class="form-control" required>
+                <option value="">Seleccione un empleado</option>
+                {% for empleado in empleados %}
+                    <option value="{{ empleado.id }}">{{ empleado.nombre }} {{ empleado.apellido }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
         <div class="info-section">
             <h3>Información importante:</h3>
             <ul>
@@ -27,6 +38,7 @@
                 <li>Podrás ver los resultados en la sección de reportes</li>
             </ul>
         </div>
+        
         <button type="submit" class="btn btn-primary">Generar Nueva Encuesta</button>
     </form>
 </div>

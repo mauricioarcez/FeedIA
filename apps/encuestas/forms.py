@@ -1,6 +1,15 @@
 # encuestas/forms.py
 from django import forms
-from .models import Encuesta
+from .models import Encuesta, Empleado
+
+class EmpleadoForm(forms.ModelForm):
+    class Meta:
+        model = Empleado
+        fields = ['nombre', 'apellido']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'apellido': forms.TextInput(attrs={'class': 'form-control'})
+        }
 
 class EncuestaForm(forms.ModelForm):
     class Meta:

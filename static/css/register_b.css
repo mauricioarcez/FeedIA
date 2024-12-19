@@ -1,0 +1,196 @@
+/* Variables de estilo consistentes */
+:root {
+    --color-primary: #1D3C59;
+    --color-secondary: #00A9B8;
+    --color-background: #F5F5F5;
+    --color-text: #333333;
+    --color-light: #ffffff;
+    --font-main: 'Poppins', sans-serif;
+    --color-error: #e74c3c;
+    --color-success: #2ecc71;
+}
+
+/* Contenedor principal */
+.register-business-container {
+    min-height: 100vh;
+    padding: 3rem 1.5rem;
+    background: linear-gradient(135deg, var(--color-background) 0%, #ffffff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-main);
+}
+
+/* Formulario */
+.register-business-form {
+    background: var(--color-light);
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto decorativo */
+.register-business-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+}
+
+/* Encabezado */
+.register-business-form h2 {
+    color: var(--color-primary);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.register-business-form p {
+    color: var(--color-text);
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    opacity: 0.8;
+}
+
+/* Grupos de campos */
+.form-group {
+    margin-bottom: 1.8rem;
+}
+
+.form-group label {
+    display: block;
+    color: var(--color-text);
+    font-weight: 500;
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    border: 2px solid #e1e1e1;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: var(--font-main);
+    transition: all 0.3s ease;
+    background-color: var(--color-light);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 4px rgba(0, 169, 184, 0.1);
+}
+
+/* Campos en línea */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Mensajes de ayuda */
+.helptext {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.5rem;
+    margin-left: 0.3rem;
+}
+
+/* Mensajes de error */
+.errorlist {
+    list-style: none;
+    color: var(--color-error);
+    font-size: 0.85rem;
+    margin: 0.5rem 0;
+    padding: 0;
+}
+
+/* Botón de registro */
+.register-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--color-secondary);
+    color: var(--color-light);
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    font-family: var(--font-main);
+}
+
+.register-btn:hover {
+    background: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 169, 184, 0.2);
+}
+
+/* Enlaces adicionales */
+.additional-links {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.additional-links a {
+    color: var(--color-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.additional-links a:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+/* Mensajes de alerta */
+.alert {
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--color-success);
+    border: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+.alert-error {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--color-error);
+    border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .register-business-form {
+        padding: 2rem;
+    }
+
+    .register-business-form h2 {
+        font-size: 2rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}

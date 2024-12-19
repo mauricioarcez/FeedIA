@@ -19,7 +19,8 @@
 
     <div class="info-section">
         <p><strong>Negocio: </strong>{{ encuesta.negocio.nombre_negocio }}</p>
-        <p><strong>Fecha de creación: </strong>{{ encuesta.fecha_respuesta|date:"d/m/Y H:i" }}</p>
+        <p><strong>Empleado: </strong>{{ encuesta.empleado.nombre }} {{ encuesta.empleado.apellido }}</p>
+        <p><strong>Fecha: </strong>{{ encuesta.fecha_respuesta|date:"d/m/Y H:i" }}</p>
     </div>
 
     <form method="POST" class="encuesta-form">
