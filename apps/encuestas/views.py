@@ -6,9 +6,7 @@ from django.utils import timezone
 from apps.usuarios.models import CustomUser
 from .models import Encuesta, Empleado
 from .forms import EncuestaForm, EmpleadoForm
-from datetime import datetime, timedelta
-import json
-from django.core.serializers.json import DjangoJSONEncoder
+from datetime import timedelta
 from .services import ReportesService
 
 # ------------------------------------------------------------------------------------------------
@@ -135,6 +133,8 @@ def ingresar_codigo(request):
     negocios = CustomUser.objects.filter(user_type='business')
     return render(request, 'encuestas/ingresar_codigo.html', {'negocios': negocios})
 
+# ------------------------------------------------------------------------------------------------
+
 @login_required
 def administrar_empleados(request):
     if not request.user.is_business_user():
@@ -159,6 +159,8 @@ def administrar_empleados(request):
         'form': form
     })
 
+# ------------------------------------------------------------------------------------------------
+
 @login_required
 def toggle_empleado(request, empleado_id):
     empleado = get_object_or_404(Empleado, id=empleado_id, negocio=request.user)
@@ -166,23 +168,23 @@ def toggle_empleado(request, empleado_id):
     empleado.save()
     return redirect('encuestas:administrar_empleados')
 
+# ------------------------------------------------------------------------------------------------
+
 @login_required
 def reportes(request):
-    if not request.user.is_business_user():
-        messages.error(request, "Acceso denegado")
-        return redirect('home')
-    
+    orden = request.GET.get('orden', 'calificacion_desc')
     service = ReportesService(request.user.id)
+    ranking_empleados = service.get_ranking_empleados(orden)
+    
+    # Obtener totales de opiniones
+    total_opiniones = service.get_total_opiniones()
     
     context = {
-        'total_sentimientos': service.get_sentimientos_totales(),
-        'ranking_empleados': service.get_ranking_empleados(),
-        'datos': [
-            service.get_sentimientos_totales()['POS'],
-            service.get_sentimientos_totales()['NEG']
-        ]
+        'ranking_empleados': ranking_empleados,
+        'orden': orden,
+        'total_opiniones_positivas': total_opiniones['positivas'],
+        'total_opiniones_negativas': total_opiniones['negativas']
     }
-    
     return render(request, 'encuestas/reportes.html', context)
 
 

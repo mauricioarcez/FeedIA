@@ -1,81 +1,163 @@
-/* Variables de estilo consistentes */
+/* Define variables globales para usar en toda la aplicación */
 :root {
-    --color-primary: #1D3C59;
-    --color-secondary: #00A9B8;
-    --color-background: #F5F5F5;
-    --color-text: #333333;
-    --color-light: #ffffff;
-    --font-main: 'Poppins', sans-serif;
-    --sidebar-width: 280px; /* Ancho de la barra lateral */
+    --color-primary: #1D3C59;    /* Color principal, azul oscuro */
+    --color-secondary: #00A9B8;  /* Color secundario, turquesa */
+    --color-background: #F5F5F5; /* Color de fondo, gris claro */
+    --color-text: #333333;       /* Color de texto, casi negro */
+    --color-light: #ffffff;      /* Color blanco */
+    --font-main: 'Poppins', sans-serif; /* Fuente principal */
+    --sidebar-width: 280px;      /* Ancho fijo de la barra lateral */
 }
 
+/* Contenedor principal del dashboard de reportes */
 .reportes-dashboard {
-    height: 100vh;
-    margin-left: var(--sidebar-width);
     display: grid;
-    grid-template-columns: 3fr 1fr; /* 75% gráficos, 25% ranking */
-    gap: 1rem;
+    grid-template-rows: auto 1fr 1fr;
+    gap: 1.5rem;
+    height: calc(100vh - 4rem);
+    margin-right: -2rem;
+    margin-top: -2rem;
+    margin-left: -1rem;
     padding: 1rem;
     background: var(--color-background);
+    width: calc(98%);
+    margin-left: 1rem;
+    overflow-x: hidden;
+    border: 2px solid purple;
 }
 
-/* Grid de gráficos */
-.charts-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
-    grid-template-rows: repeat(3, 1fr); /* 3 filas */
-    gap: 1rem;
-    height: 100%;
-}
-
-.chart-wrapper {
-    background: var(--color-light);
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    padding: 0.75rem;
+/* Contenedor de tarjetas horizontal (4 tarjetas)*/
+.cards-container {
     display: flex;
-    flex-direction: column;
-    min-height: 0; /* Importante para el scroll */
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    height: auto;
+    border: 2px solid blue;
 }
 
-/* Tabla de ranking */
-.ranking-section {
+/* Estilo individual de cada tarjeta */
+.stat-card {
     background: var(--color-light);
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    padding: 0.75rem;
-    overflow-y: auto;
-    height: 100%;
+    padding: 1rem;
+    height: 100px;
+    flex: 1;
+    min-width: 0;
+    border: 2px solid green;
 }
 
+/* Sección del ranking */
+.ranking-section {
+    background: var(--color-light);        
+    border-radius: 10px;                   
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);                         
+    height: 30vh;                          /* Altura fija para el ranking */
+    width: 100%;                           /* Ancho completo */
+    overflow-y: auto;                      /* Scroll vertical si es necesario */
+    border: 2px solid orange;
+}
+
+/* Contenedor de los gráficos */
+.charts-container {
+    border: 2px solid red;
+    height: 190px;  /* Altura reducida */
+    margin: 0.5rem;  /* Margen reducido */
+    display: flex;
+    justify-content: center;
+}
+
+/* Estilos de la tabla de ranking */
 .ranking-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.875rem;
+    border: 2px solid brown;
 }
 
-.ranking-table th,
-.ranking-table td {
-    padding: 0.5rem;
-    text-align: left;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+/* Contenido del encabezado */
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
 }
 
-.ranking-table th {
-    position: sticky;
-    top: 0;
-    background: var(--color-light);
-    font-weight: 600;
+/* Contenedor de botones de ordenamiento */
+.sort-buttons {
+    display: flex;
+    flex-direction: column;
+    background: rgba(0,0,0,0.05);
+    border-radius: 4px;
+    padding: 1px;
+}
+
+/* Botones de ordenamiento */
+.sort-btn {
+    background: transparent;
+    border: none;
     color: var(--color-primary);
-    z-index: 1;
-    font-size: 0.75rem;
+    opacity: 0.7;
+    cursor: pointer;
+    padding: 1px;
+    font-size: 12px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 }
 
-.sentiment-badge {
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
-    font-size: 0.75rem;
+.sort-btn:hover {
+    opacity: 1;
+    background: rgba(0,0,0,0.1);
+}
+
+.sort-btn.active {
+    opacity: 1;
+    color: var(--color-secondary);
+}
+
+/* Ajustar anchos de columnas */
+.ranking-table th:first-child {
+    width: 60%;
+    text-align: left;
+}
+
+.ranking-table th:nth-child(2),
+.ranking-table th:nth-child(3) {
+    width: 20%;
+}
+
+/* Alineación de celdas */
+.ranking-table td,
+.ranking-table th {
+    padding: 0.75rem 0.5rem;
+}
+
+.ranking-table td:nth-child(2),
+.ranking-table td:nth-child(3) {
+    text-align: center;
+}
+
+/* Estilo para la última fila */
+.ranking-table tr.last-place {
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+.ranking-table tr.last-place td {
+    color: #c0392b;
     font-weight: 500;
+}
+
+/* Estilos para los badges de sentimiento */
+.sentiment-badge {
+    padding: 0.25rem 0.5rem;             
+    border-radius: 12px;                  
+    font-size: 0.75rem;                   
+    font-weight: 500;                     
 }
 
 .sentiment-positive {
@@ -88,30 +170,118 @@
     color: #e74c3c;
 }
 
-@media (max-width: 1400px) {
-    .charts-container {
-        grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas más pequeñas */
-    }
+/* Estilos para el encabezado del ranking */
+.ranking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 0.75rem;
 }
 
-@media (max-width: 1024px) {
-    .reportes-dashboard {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-    }
-    
-    .charts-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.ranking-header h3 {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: 1.1rem;
 }
 
-@media (max-width: 768px) {
-    .reportes-dashboard {
-        margin-left: 70px;
-        padding: 0.5rem;
-    }
-    
-    .charts-container {
-        grid-template-columns: 1fr;
-    }
-} 
+.ranking-filters {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-btn {
+    background: var(--color-light);
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background: rgba(29, 60, 89, 0.1);
+}
+
+.filter-btn.active {
+    background: var(--color-primary);
+    color: var(--color-light);
+}
+
+.filter-btn i {
+    font-size: 0.75rem;
+}
+
+/* Estilos para columnas ordenables */
+.ranking-table th.sortable {
+    position: relative;
+    padding-left: 25px;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+
+/* Asegurar que todas las columnas tengan el mismo ancho */
+.ranking-table th:first-child,
+.ranking-table td:first-child {
+    width: 40%;  /* Columna de nombre */
+}
+
+.ranking-table th:nth-child(2),
+.ranking-table td:nth-child(2) {
+    width: 15%;  /* Columna de total */
+}
+
+.ranking-table th:nth-child(3),
+.ranking-table td:nth-child(3) {
+    width: 20%;  /* Columna de calificación */
+}
+
+.ranking-table th:last-child,
+.ranking-table td:last-child {
+    width: 25%;  /* Columna de sentimiento */
+}
+
+/* Separador entre top 2 y último */
+.ranking-table tr.separator-row td {
+    padding: 0.5rem 0;
+    border: none;
+}
+
+/* Asegurar que la tabla tenga un layout horizontal correcto */
+.ranking-table thead tr {
+    display: table-row;
+}
+
+.ranking-table th {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+/* Gráfico de sentimiento */
+.sentiment-chart {
+    border: 2px solid pink;
+    background: var(--color-light);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 300px;  /* Ancho máximo reducido */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Asegurarse de que el canvas respete el contenedor */
+.sentiment-chart canvas {
+    max-height: 100%;
+    width: 100% !important;
+    height: 100% !important;
+}

@@ -5,62 +5,153 @@
 
 {% block content %}
 <div class="reportes-dashboard">
+    <!-- Primera fila: Tarjetas de estadísticas -->
+    <div class="cards-container">
+        <div class="stat-card">
+            <!-- Contenido de la tarjeta 1 -->
+        </div>
+        <div class="stat-card">
+            <!-- Contenido de la tarjeta 2 -->
+        </div>
+        <div class="stat-card">
+            <!-- Contenido de la tarjeta 3 -->
+        </div>
+        <div class="stat-card">
+            <!-- Contenido de la tarjeta 4 -->
+        </div>
+    </div>
+
+    <!-- Segunda fila: Ranking -->
+    <div class="ranking-section">
+        <table class="ranking-table">
+            <thead>
+                <tr>
+                    <th>Empleado</th>
+                    <th>
+                        <div class="header-content">
+                            <div class="sort-buttons">
+                                <button class="sort-btn {% if orden == 'total_desc' %}active{% endif %}" data-orden="total_desc">
+                                    <i class="fas fa-caret-up"></i>
+                                </button>
+                                <button class="sort-btn {% if orden == 'total_asc' %}active{% endif %}" data-orden="total_asc">
+                                    <i class="fas fa-caret-down"></i>
+                                </button>
+                            </div>
+                            <span>Total</span>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="header-content">
+                            <div class="sort-buttons">
+                                <button class="sort-btn {% if orden == 'calificacion_desc' %}active{% endif %}" data-orden="calificacion_desc">
+                                    <i class="fas fa-caret-up"></i>
+                                </button>
+                                <button class="sort-btn {% if orden == 'calificacion_asc' %}active{% endif %}" data-orden="calificacion_asc">
+                                    <i class="fas fa-caret-down"></i>
+                                </button>
+                            </div>
+                            <span>Calif. Prom.</span>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for empleado in ranking_empleados %}
+                <tr class="{% if empleado.is_last %}last-place{% endif %}">
+                    <td>{{ empleado.nombre }}</td>
+                    <td>{{ empleado.total_encuestas }}</td>
+                    <td>{{ empleado.calificacion_promedio|floatformat:1 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tercera fila: Gráficos -->
     <div class="charts-container">
-        <div class="chart-wrapper">
-            <canvas id="sentimientosChart" 
-                data-pos="{{ total_sentimientos.POS }}" 
-                data-neg="{{ total_sentimientos.NEG }}">
-            </canvas>
+        <div class="sentiment-chart">
+            <canvas id="sentimentChart"></canvas>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const canvas = document.getElementById('sentimientosChart');
-    const sentimientosData = {
-        POS: parseInt(canvas.dataset.pos) || 0,
-        NEG: parseInt(canvas.dataset.neg) || 0
-    };
+    const sortButtons = document.querySelectorAll('.sort-btn');
+    
+    sortButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const orden = this.dataset.orden;
+            window.location.href = `?orden=${orden}`;
+        });
+    });
 
-    const ctx = canvas.getContext('2d');
+    // Configuración del gráfico de sentimiento
+    const ctx = document.getElementById('sentimentChart').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Sentimientos'],
+            labels: ['Positivas', 'Negativas'],
             datasets: [{
-                label: 'Positivas',
-                data: [sentimientosData.POS],
-                backgroundColor: '#00A9B8'
-            }, {
-                label: 'Negativas',
-                data: [sentimientosData.NEG],
-                backgroundColor: '#e74c3c'
+                data: [
+                    parseInt("{{ total_opiniones_positivas|default_if_none:'0' }}"),
+                    parseInt("{{ total_opiniones_negativas|default_if_none:'0' }}")
+                ],
+                backgroundColor: [
+                    'rgba(0, 169, 184, 0.7)',
+                    'rgba(231, 76, 60, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(0, 169, 184, 1)',
+                    'rgba(231, 76, 60, 1)'
+                ],
+                borderWidth: 1
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                x: { stacked: true },
-                y: { 
-                    stacked: true,
-                    beginAtZero: true
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        font: {
+                            size: 10  // Tamaño de fuente más pequeño
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 10  // Tamaño de fuente más pequeño
+                        }
+                    }
                 }
             },
             plugins: {
                 legend: {
-                    position: 'top'
+                    display: false  // Ocultar leyenda
                 },
                 title: {
-                    display: true,
-                    text: 'Distribución de Sentimientos'
+                    display: false  // Ocultar título
+                }
+            },
+            layout: {
+                padding: {
+                    top: 5,    // Menos padding
+                    right: 5,
+                    bottom: 5,
+                    left: 5
                 }
             }
         }
     });
 });
 </script>
-{% endblock %} 
+{% endblock %}
