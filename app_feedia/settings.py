@@ -192,21 +192,25 @@ if ENVIRONMENT == 'docker':
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
-    'loggers': {
-       'apps.usuarios': {
-           'handlers': ['console'],
+   'version': 1,
+   'disable_existing_loggers': False,
+   'handlers': {
+       'console': {
+           'class': 'logging.StreamHandler',
+       },
+       'file': {
+           'class': 'logging.FileHandler',
+           'filename': 'debug.log',
+       },
+   },
+   'loggers': {
+       'django': {
+           'handlers': ['console', 'file'],
            'level': 'INFO',
+       },
+       'apps.usuarios': {
+           'handlers': ['console', 'file'],
+           'level': 'DEBUG',
            'propagate': True,
        },
    },

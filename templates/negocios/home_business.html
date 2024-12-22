@@ -1,9 +1,31 @@
 {% extends 'base_logged_in.html' %}
 
-{% block subtitle %}Bienvenido, {{ user.username }}{% endblock %}
-
 {% block content %}
-    <h2>Bienvenido, Negocio</h2>
-    <p>Gracias por utilizar FeedIA para mejorar la experiencia de tus clientes.</p>
-    <p>Aquí podrás ver los reportes de las encuestas de tus clientes.</p>
-{% endblock %}
+<div class="dashboard-container">
+    <h2 class="welcome-title">Bienvenido, {{ user.nombre_negocio }}</h2>
+    
+    <div class="stats-cards">
+        <!-- Usuarios en la provincia -->
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Usuarios en {{ user.provincia }}</h3>
+                <p class="stat-value">{{ usuarios_provincia|default:"0" }}</p>
+            </div>
+        </div>
+        
+        <!-- Total usuarios globales -->
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-globe-americas"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Total Usuarios</h3>
+                <p class="stat-value">{{ total_usuarios|default:"0" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

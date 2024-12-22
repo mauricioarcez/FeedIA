@@ -6,10 +6,17 @@
     <nav>
         <ul>
             <li>
-                <a href="{% url 'usuarios:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                {% if user.user_type == 'business' %}
+                <a href="{% url 'usuarios:home_business' %}" class="{% if request.resolver_match.url_name == 'home_business' %}active{% endif %}">
                     <i class="fas fa-home"></i>
                     <span>Inicio</span>
                 </a>
+                {% else %}
+                <a href="{% url 'usuarios:home_common' %}" class="{% if request.resolver_match.url_name == 'home_common' %}active{% endif %}">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+                {% endif %}
             </li>
             
             {% if user.user_type == 'common' %}

@@ -13,7 +13,8 @@ urlpatterns = [
     
     path('register/business/', views.register_business, name='register_business'),
     
-    path('home/', views.home_view, name='home'),
+    path('negocios/home/', views.home_business, name='home_business'),
+    path('usuario/home/', views.home_common, name='home_common'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
