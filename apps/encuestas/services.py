@@ -7,6 +7,7 @@ import plotly.utils
 import json
 from apps.encuestas.models import Encuesta, Empleado
 
+# --------------------------------------------------------------------------------------------
 class ReportesService:
     CACHE_TTL = 3600  # 1 hora en segundos
     
@@ -74,6 +75,7 @@ class ReportesService:
         
         return result 
 
+
     def get_sentimientos_graph(self) -> str:
         """Genera gráfico de sentimientos con Plotly"""
         sentimientos = self.get_sentimientos_totales()
@@ -126,6 +128,25 @@ class ReportesService:
                 'negativas': Encuesta.objects.filter(
                     empleado__negocio_id=self.negocio_id,
                     sentimiento='NEG'
+                ).count()
+            }
+            cache.set(cache_key, result, self.CACHE_TTL)
+        
+        return result
+
+    def get_total_genero(self) -> Dict[str, int]:
+        cache_key = f"total_genero_{self.negocio_id}"
+        result = cache.get(cache_key)
+        
+        if result is None:
+            result = {
+                'masculino': Encuesta.objects.filter(
+                    empleado__negocio_id=self.negocio_id,
+                    usuario__genero='M'  # Usamos el género del usuario que creó la encuesta
+                ).count(),
+                'femenino': Encuesta.objects.filter(
+                    empleado__negocio_id=self.negocio_id,
+                    usuario__genero='F'  # Usamos el género del usuario que creó la encuesta
                 ).count()
             }
             cache.set(cache_key, result, self.CACHE_TTL)

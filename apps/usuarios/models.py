@@ -14,6 +14,12 @@ class CustomUser(AbstractUser):
         ('business', 'Usuario Negocio'),
     )
     
+    GENERO_CHOICES = [
+        ('M', 'Masculino'),
+        ('F', 'Femenino'),
+        ('O', 'Otro'),
+    ]
+    
     # Tipo de usuario (común o negocio)
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='common')
 
@@ -26,9 +32,19 @@ class CustomUser(AbstractUser):
     # Campos de negocio
     first_name = models.CharField(max_length=30, blank=False)  # Nombre obligatorio, no nulo
     last_name = models.CharField(max_length=30, blank=False)  # Apellido obligatorio, no nulo
-    nombre_negocio = models.CharField(max_length=60, blank=False)  # Nombre de negocio obligatorio, no nulo
-    provincia = models.CharField(max_length=50, blank=False)  # Provincia obligatoria, no nula
-    ciudad = models.CharField(max_length=60, blank=False)  # Ciudad obligatoria, no nula
+    nombre_negocio = models.CharField(max_length=60, blank=True, null=True)  # Opcional para usuarios comunes
+    
+    # Campos de ubicación (requeridos para todos los usuarios)
+    provincia = models.CharField(max_length=50, blank=False)
+    ciudad = models.CharField(max_length=60, blank=False)
+    
+    # Campo de género
+    genero = models.CharField(
+        max_length=1,
+        choices=GENERO_CHOICES,
+        blank=False,  # No permitir valores en blanco
+        null=False   # No permitir valores nulos
+    )
     
     # Validación personalizada de correo
     def clean(self):
@@ -37,6 +53,12 @@ class CustomUser(AbstractUser):
             pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
             if not re.match(pattern, self.correo):
                 raise ValidationError('Formato de correo inválido.')
+        
+        # Validar que la ciudad y provincia no estén vacías
+        if not self.ciudad:
+            raise ValidationError('La ciudad es obligatoria.')
+        if not self.provincia:
+            raise ValidationError('La provincia es obligatoria.')
 
     def is_common_user(self):
         return self.user_type == 'common'

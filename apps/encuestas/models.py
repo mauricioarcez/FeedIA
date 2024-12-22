@@ -67,6 +67,12 @@ class Encuesta(models.Model):
         blank=True,
         related_name='encuestas'
     )
+    hashtag = models.CharField(
+        max_length=30,  # Longitud máxima para el hashtag
+        null=True,
+        blank=True,
+        help_text="Una palabra que defina tu experiencia (sin el símbolo #)"
+    )
 
     def generar_codigo_temporal(self):
         """Genera un código único de 4 dígitos"""
@@ -108,3 +114,11 @@ class Encuesta(models.Model):
         except Exception as e:
             print(f"Error al analizar sentimiento: {str(e)}")
             return None
+
+    def clean(self):
+        super().clean()
+        if self.hashtag:
+            # Eliminar espacios y caracteres especiales
+            self.hashtag = self.hashtag.strip().replace(' ', '')
+            # Eliminar el símbolo # si el usuario lo incluyó
+            self.hashtag = self.hashtag.replace('#', '')

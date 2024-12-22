@@ -3,8 +3,44 @@
 {% block subtitle %}Bienvenido, {{ user.username }}{% endblock %}
 
 {% block content %}
-    <h2>Bienvenido, Usuario Común</h2>
-    <p>¡Gracias por ser parte de FeedIA!</p>
-    <p>Aquí podrás completar encuestas y ver tus puntos.</p>
-    <p>Tus puntos actuales: {{ user.puntos }}</p>
+<div class="dashboard-container">
+    <h2 class="welcome-title">Bienvenido, {{ user.username }}</h2>
+    
+    <div class="stats-cards">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Tus Puntos</h3>
+                <p class="stat-value">{{ user.puntos }}</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-store"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Negocios en {{ user.provincia }}</h3>
+                <p class="stat-value">{{ total }}</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-poll"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Encuestas Realizadas</h3>
+                <p class="stat-value">{{ total_encuestas|default:"0" }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="info-section">
+        <p class="info-text">¡Gracias por ser parte de FeedIA!</p>
+        <p class="info-text">Aquí podrás completar encuestas y acumular puntos.</p>
+    </div>
+</div>
 {% endblock %}

@@ -16,10 +16,34 @@ class CommonUserRegistrationForm(forms.ModelForm):
     genero = forms.ChoiceField(choices=genero_choices)  # Campo para género
     fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))  # Campo para fecha de nacimiento
     correo = forms.EmailField(max_length=60)  # Campo para el correo
+    
+    # Nuevos campos para ubicación
+    ciudad = forms.CharField(
+        max_length=60,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Ej: Resistencia',
+            'class': 'form-control'
+        })
+    )
+    provincia = forms.CharField(
+        max_length=50,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Ej: Chaco',
+            'class': 'form-control'
+        })
+    )
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'correo', 'password', 'genero', 'fecha_nacimiento']  # Campos a mostrar en el formulario
+        fields = [
+            'username', 
+            'correo', 
+            'password', 
+            'genero', 
+            'fecha_nacimiento',
+            'ciudad',
+            'provincia'
+        ]
 
     def save(self, commit=True):
         """Guarda el usuario, asigna puntos y encripta la contraseña"""
@@ -33,6 +57,8 @@ class CommonUserRegistrationForm(forms.ModelForm):
         user.genero = self.cleaned_data['genero']  # Asigna el género
         user.fecha_nacimiento = self.cleaned_data['fecha_nacimiento']  # Asigna la fecha de nacimiento
         user.correo = self.cleaned_data['correo']  # Asigna el correo
+        user.ciudad = self.cleaned_data['ciudad'].lower().capitalize()  # Normaliza la ciudad
+        user.provincia = self.cleaned_data['provincia'].lower().capitalize()  # Normaliza la provincia
 
         # Asigna los puntos iniciales solo si el usuario es de tipo 'common' y si no tiene puntos
         if user.is_common_user() and user.puntos is None:
@@ -47,36 +73,32 @@ class CommonUserRegistrationForm(forms.ModelForm):
 # ------------------------------------------------------------------------------------------------------
 
 class BusinessUserRegistrationForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    
-    # Opcional: Definir el campo username como obligatorio o con alguna lógica para generarlo automáticamente
-    username = forms.CharField(max_length=30, required=True)  # Campo de username obligatorio
-
     class Meta:
         model = CustomUser
-        fields = ['username', 'first_name', 'last_name', 'correo', 'password', 'provincia', 'ciudad', 'nombre_negocio']
+        fields = ['username', 'correo', 'password', 'provincia', 'ciudad', 'nombre_negocio', 'first_name', 'last_name']
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        
-        # Encripta la contraseña
+        # Encriptar la contraseña
         user.set_password(self.cleaned_data['password'])
-
-        # Asigna el tipo de usuario como 'business'
+        
+        # Establecer explícitamente el tipo de usuario como 'business'
         user.user_type = 'business'
-
-        # Asigna los demás campos (de negocio) según lo ingresado en el formulario
-        user.username = self.cleaned_data['username']  # Asigna el nombre de usuario
+        
+        # Normalizar la provincia
+        if self.cleaned_data.get('provincia'):
+            user.provincia = self.cleaned_data['provincia'].lower().capitalize()
+        
+        # Asegurarse de que los campos requeridos estén establecidos
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
-        user.correo = self.cleaned_data['correo']
-        user.provincia = self.cleaned_data['provincia']
-        user.ciudad = self.cleaned_data['ciudad']
         user.nombre_negocio = self.cleaned_data['nombre_negocio']
-
+        user.correo = self.cleaned_data['correo']
+        user.ciudad = self.cleaned_data['ciudad']
+        
         if commit:
-            user.save()  # Guarda el usuario en la base de datos
-
+            user.save()
+        
         return user
 
 # ------------------------------------------------------------------------------------------------------

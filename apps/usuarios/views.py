@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from .forms import CommonUserRegistrationForm, BusinessUserRegistrationForm
 from django.contrib.auth import logout as auth_logout
+from apps.encuestas.models import Encuesta
+from django.contrib.auth import get_user_model
 
 # ---------------------------------------------------------------------------------------------------------
 def register(request):
@@ -58,15 +60,48 @@ def home_view(request):
 
 # ---------------------------------------------------------------------------------------------------------
 
-def register_business_user(request):
-    """Vista para registrar un usuario de tipo negocio"""
+def register_business(request):
     if request.method == 'POST':
         form = BusinessUserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            auth_login(request, user)  # Inicia sesión automáticamente después de registrar
-            return redirect('usuarios:home')  # Redirige al home después de un registro exitoso
+            # Crear el usuario pero no guardarlo todavía
+            user = form.save(commit=False)
+            
+            # Establecer explícitamente el tipo como negocio
+            user.user_type = 'business'
+            
+            # Normalizar la provincia
+            user.provincia = form.cleaned_data['provincia'].lower().capitalize()
+            
+            # Guardar el usuario
+            user.save()
+            
+            # Iniciar sesión automáticamente
+            auth_login(request, user)
+            
+            return redirect('usuarios:home')
     else:
         form = BusinessUserRegistrationForm()
 
     return render(request, 'negocios/register_b.html', {'form': form})
+
+
+# ---------------------------------------------------------------------------------------------------------
+
+def home_common(request):
+    CustomUser = get_user_model()
+    
+    # Obtener todos los negocios sin restricción de usuario
+    total = CustomUser.objects.filter(
+        user_type='business'
+    ).count()
+    
+    context = {
+        'total': total,
+        'total_encuestas': Encuesta.objects.filter(
+            usuario=request.user,
+            encuesta_completada=True
+        ).count()
+    }
+    
+    return render(request, 'usuarios/home_common.html', context)

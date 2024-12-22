@@ -28,22 +28,22 @@
         
         <div class="form-group">
             <label>Experiencia General</label>
-            <div class="star-rating" data-rating="0" data-input="id_experiencia_general">
-                {% for i in "12345678910" %}
-                <span class="star">★</span>
+            <div class="star-rating" data-rating="0">
+                {% for i in "12345" %}
+                <span class="star" data-value="{{ i }}">★</span>
                 {% endfor %}
             </div>
-            {{ form.experiencia_general }}
+            <input type="hidden" id="id_experiencia_general" name="experiencia_general" value="0">
         </div>
 
         <div class="form-group">
             <label>Atención del Servicio</label>
-            <div class="star-rating" data-rating="0" data-input="id_atencion_servicio">
-                {% for i in "12345678910" %}
-                <span class="star">★</span>
+            <div class="star-rating" data-rating="0">
+                {% for i in "12345" %}
+                <span class="star" data-value="{{ i }}">★</span>
                 {% endfor %}
             </div>
-            {{ form.atencion_servicio }}
+            <input type="hidden" id="id_atencion_servicio" name="atencion_servicio" value="0">
         </div>
 
         {% for field in form %}
@@ -75,8 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     starContainers.forEach(container => {
         const stars = container.querySelectorAll('.star');
-        const inputId = container.dataset.input;
-        const hiddenInput = document.getElementById(inputId);
+        const hiddenInput = container.querySelector('input[type="hidden"]');
         
         stars.forEach((star, index) => {
             star.addEventListener('click', () => {
@@ -95,13 +94,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     s.classList.toggle('hover', i < rating);
                 });
             });
-        });
-        
-        container.addEventListener('mouseout', () => {
-            const rating = parseInt(container.dataset.rating) || 0;
-            stars.forEach((s, i) => {
-                s.classList.remove('hover');
-                s.classList.toggle('active', i < rating);
+
+            star.addEventListener('mouseenter', () => {
+                if (index + 0.5 <= 5) {
+                    stars.forEach((s, i) => {
+                        s.classList.toggle('hover', i < index + 0.5);
+                    });
+                }
+            });
+
+            star.addEventListener('mouseleave', () => {
+                const rating = parseInt(container.dataset.rating) || 0;
+                stars.forEach((s, i) => {
+                    s.classList.remove('hover');
+                    s.classList.toggle('active', i < rating);
+                });
             });
         });
     });

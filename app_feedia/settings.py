@@ -204,12 +204,12 @@ LOGGING = {
         'level': 'INFO',
     },
     'loggers': {
-        'apps.encuestas': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
+       'apps.usuarios': {
+           'handlers': ['console'],
+           'level': 'INFO',
+           'propagate': True,
+       },
+   },
 }
  
 # Configuración de rendimiento para ML
