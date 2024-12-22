@@ -1,6 +1,6 @@
 {% extends 'base_logged_in.html' %}
 
-{% block subtitle %}Bienvenido, {{ user.username }}{% endblock %}
+{% block subtitle %}Bienvenido{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -23,7 +23,7 @@
             </div>
             <div class="stat-content">
                 <h3>Negocios en {{ user.provincia }}</h3>
-                <p class="stat-value">{{ total }}</p>
+                <p class="stat-value">{{ negocios_count|default:"0" }}</p>
             </div>
         </div>
         

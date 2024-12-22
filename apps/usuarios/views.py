@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import CommonUserRegistrationForm, BusinessUserRegistrationForm
 from django.contrib.auth import logout as auth_logout
 from apps.encuestas.models import Encuesta
-from django.contrib.auth import get_user_model
+from .models import CustomUser
 
 # ---------------------------------------------------------------------------------------------------------
 def register(request):
@@ -58,6 +58,7 @@ def home_view(request):
     return redirect('usuarios:login')  # Si no es común ni negocio, redirige al login
 
 
+
 # ---------------------------------------------------------------------------------------------------------
 
 def register_business(request):
@@ -88,20 +89,23 @@ def register_business(request):
 
 # ---------------------------------------------------------------------------------------------------------
 
+@login_required
 def home_common(request):
-    CustomUser = get_user_model()
+    # Obtener el conteo de negocios para la provincia del usuario
+    negocios_count = CustomUser.objects.filter(
+        user_type='business',
+        provincia=request.user.provincia
+    ).count()
     
-    # Obtener todos los negocios sin restricción de usuario
-    total = CustomUser.objects.filter(
-        user_type='business'
+    # Obtener el conteo de encuestas completadas por el usuario
+    total_encuestas = Encuesta.objects.filter(
+        usuario=request.user,
+        encuesta_completada=True
     ).count()
     
     context = {
-        'total': total,
-        'total_encuestas': Encuesta.objects.filter(
-            usuario=request.user,
-            encuesta_completada=True
-        ).count()
+        'negocios_count': negocios_count,
+        'total_encuestas': total_encuestas,
     }
     
     return render(request, 'usuarios/home_common.html', context)
