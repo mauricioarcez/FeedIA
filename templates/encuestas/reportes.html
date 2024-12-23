@@ -69,89 +69,34 @@
 
     <!-- Tercera fila: Gráficos -->
     <div class="charts-container">
-        <div class="sentiment-chart">
-            <canvas id="sentimentChart"></canvas>
+        <div class="chart-wrapper">
+            <h3>Análisis de Sentimientos</h3>
+            <div id="sentimientosGraph"></div>
+        </div>
+        <div class="chart-wrapper">
+            <h3>Distribución por Género</h3>
+            <div id="generosGraph"></div>
+        </div>
+        <div class="chart-wrapper">
+            <h3>Distribución por Edad</h3>
+            <div id="edadesGraph"></div>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const sortButtons = document.querySelectorAll('.sort-btn');
-    
-    sortButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const orden = this.dataset.orden;
-            window.location.href = `?orden=${orden}`;
-        });
-    });
+    const sentimientosData = JSON.parse('{{ sentimientos_graph|escapejs }}');
+    Plotly.newPlot('sentimientosGraph', sentimientosData.data, sentimientosData.layout);
 
-    // Configuración del gráfico de sentimiento
-    const ctx = document.getElementById('sentimentChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Positivas', 'Negativas'],
-            datasets: [{
-                data: [
-                    parseInt("{{ total_opiniones_positivas|default_if_none:'0' }}"),
-                    parseInt("{{ total_opiniones_negativas|default_if_none:'0' }}")
-                ],
-                backgroundColor: [
-                    'rgba(0, 169, 184, 0.7)',
-                    'rgba(231, 76, 60, 0.7)'
-                ],
-                borderColor: [
-                    'rgba(0, 169, 184, 1)',
-                    'rgba(231, 76, 60, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1,
-                        font: {
-                            size: 10  // Tamaño de fuente más pequeño
-                        }
-                    }
-                },
-                x: {
-                    ticks: {
-                        font: {
-                            size: 10  // Tamaño de fuente más pequeño
-                        }
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false  // Ocultar leyenda
-                },
-                title: {
-                    display: false  // Ocultar título
-                }
-            },
-            layout: {
-                padding: {
-                    top: 5,    // Menos padding
-                    right: 5,
-                    bottom: 5,
-                    left: 5
-                }
-            }
-        }
-    });
+    const generosData = JSON.parse('{{ generos_graph|escapejs }}');
+    Plotly.newPlot('generosGraph', generosData.data, generosData.layout);
+
+    const edadesData = JSON.parse('{{ edades_graph|escapejs }}');
+    Plotly.newPlot('edadesGraph', edadesData.data, edadesData.layout);
 });
 </script>
 {% endblock %}

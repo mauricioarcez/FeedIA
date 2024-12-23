@@ -5,7 +5,7 @@ import re
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from datetime import timedelta
+from datetime import timedelta, date
 from django.utils import timezone
     
 class CustomUser(AbstractUser):
@@ -93,6 +93,17 @@ class CustomUser(AbstractUser):
         """Marca el código como usado para evitar múltiples respuestas"""
         self.codigo_usado = True
         self.save()
+
+    fecha_nacimiento = models.DateField(null=True, blank=True)  # Agregado
+
+    @property
+    def edad(self):
+        if self.fecha_nacimiento:
+            today = date.today()
+            return today.year - self.fecha_nacimiento.year - (
+                (today.month, today.day) < (self.fecha_nacimiento.month, self.fecha_nacimiento.day)
+            )
+        return None
 
     class Meta:
         app_label = 'usuarios'

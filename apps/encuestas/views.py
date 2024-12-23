@@ -8,6 +8,10 @@ from .models import Encuesta, Empleado
 from .forms import EncuestaForm, EmpleadoForm
 from datetime import timedelta
 from .services import ReportesService
+from .ai import SentimentAnalyzer
+import logging
+
+logger = logging.getLogger(__name__)
 
 # ------------------------------------------------------------------------------------------------
 
@@ -56,27 +60,20 @@ def completar_encuesta(request, codigo):
         if request.method == 'POST':
             form = EncuestaForm(request.POST, instance=encuesta)
             if form.is_valid():
+                print("Datos del formulario:", form.cleaned_data)  # Debug
                 encuesta_respuesta = form.save(commit=False)
+                
+                # Asignar explícitamente los valores
+                encuesta_respuesta.experiencia_general = form.cleaned_data['experiencia_general']
+                encuesta_respuesta.atencion_servicio = form.cleaned_data['atencion_servicio']
                 encuesta_respuesta.usuario = request.user
                 encuesta_respuesta.encuesta_completada = True
                 
-                # Asegurarnos de que la calificación se guarde
-                if 'atencion_servicio' in form.cleaned_data:
-                    encuesta_respuesta.atencion_servicio = form.cleaned_data['atencion_servicio']
+                # Debug
+                print(f"Experiencia general: {encuesta_respuesta.experiencia_general}")
+                print(f"Atención servicio: {encuesta_respuesta.atencion_servicio}")
                 
                 encuesta_respuesta.save()
-                
-                # Debug: Imprimir información
-                print(f"Encuesta guardada - ID: {encuesta_respuesta.id}")
-                print(f"Atención servicio: {encuesta_respuesta.atencion_servicio}")
-                print(f"Empleado: {encuesta_respuesta.empleado}")
-                
-                # Analizar sentimiento
-                resultado = encuesta_respuesta.analizar_sentimiento()
-                if resultado:
-                    encuesta_respuesta.sentimiento = resultado['label']
-                    encuesta_respuesta.save()
-                
                 encuesta_respuesta.marcar_codigo_como_usado()
                 
                 # Sumar puntos al usuario
@@ -180,27 +177,22 @@ def toggle_empleado(request, empleado_id):
 
 @login_required
 def reportes(request):
-    # Verificar que sea un usuario de tipo negocio
-    if request.user.user_type != 'business':
-        messages.error(request, "No tienes permisos para ver los reportes.")
-        return redirect('inicio')
+    if not request.user.is_business_user():
+        messages.error(request, "Acceso denegado")
+        return redirect('home')
     
-    # El ID del negocio es el mismo ID del usuario business
-    negocio_id = request.user.id
-    
+    service = ReportesService(request.user.id)
     orden = request.GET.get('orden', 'calificacion_desc')
-    service = ReportesService(negocio_id)
-    ranking_empleados = service.get_ranking_empleados(orden)
-    
-    # Obtener totales de opiniones
-    total_opiniones = service.get_total_opiniones()
     
     context = {
-        'ranking_empleados': ranking_empleados,
+        'total_opiniones': service.get_total_opiniones(),
+        'ranking_empleados': service.get_ranking_empleados(orden),
         'orden': orden,
-        'total_opiniones_positivas': total_opiniones['positivas'],
-        'total_opiniones_negativas': total_opiniones['negativas']
+        'sentimientos_graph': service.get_sentimientos_graph(),
+        'generos_graph': service.get_generos_graph(),
+        'edades_graph': service.get_edades_graph()
     }
+    
     return render(request, 'encuestas/reportes.html', context)
 
 

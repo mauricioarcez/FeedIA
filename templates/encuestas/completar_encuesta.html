@@ -1,77 +1,68 @@
 {% extends 'base_logged_in.html' %}
 {% load static %}
 
-{% block subtitle %}Completar Encuesta{% endblock %}
-
 {% block content %}
-<div class="form-container">
-    <h2>Completar Encuesta</h2>
-
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-            {{ message }}
+<div class="survey-container">
+    <div class="survey-header">
+        <h2>Completar Encuesta</h2>
+        <div class="survey-info">
+            <p><strong>Negocio:</strong> {{ encuesta.negocio.nombre_negocio }}</p>
+            {% if encuesta.empleado %}
+            <p><strong>Atendido por:</strong> {{ encuesta.empleado.nombre }} {{ encuesta.empleado.apellido }}</p>
+            {% endif %}
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <div class="info-section">
-        <p><strong>Negocio: </strong>{{ encuesta.negocio.nombre_negocio }}</p>
-        <p><strong>Empleado: </strong>{{ encuesta.empleado.nombre }} {{ encuesta.empleado.apellido }}</p>
-        <p><strong>Fecha: </strong>{{ encuesta.fecha_respuesta|date:"d/m/Y H:i" }}</p>
     </div>
 
-    <form method="POST" class="encuesta-form">
+    <form method="POST" class="survey-form">
         {% csrf_token %}
         
+        <!-- Tipo de Cliente -->
         <div class="form-group">
-            <label>Experiencia General</label>
-            <div class="star-rating" data-rating="0">
-                {% for i in "12345" %}
-                <span class="star" data-value="{{ i }}">★</span>
+            <label for="{{ form.tipo_cliente.id_for_label }}">¿Qué tipo de cliente eres?</label>
+            {{ form.tipo_cliente }}
+        </div>
+
+        <!-- Experiencia General -->
+        <div class="form-group">
+            <label>¿Cómo calificarías tu experiencia general?</label>
+            <div class="rating-container">
+                {% for i in "54321" %}
+                <input type="radio" name="experiencia_general" value="{{ i }}" id="exp_{{ i }}" required>
+                <label for="exp_{{ i }}"></label>
                 {% endfor %}
             </div>
-            <input type="hidden" id="id_experiencia_general" name="experiencia_general" value="0">
         </div>
 
+        <!-- Atención del Servicio -->
         <div class="form-group">
-            <label>Atención del Servicio</label>
-            <div class="star-rating" data-rating="0">
-                {% for i in "12345" %}
-                <span class="star" data-value="{{ i }}">★</span>
+            <label>¿Cómo calificarías la atención del servicio?</label>
+            <div class="rating-container">
+                {% for i in "54321" %}
+                <input type="radio" name="atencion_servicio" value="{{ i }}" id="aten_{{ i }}" required>
+                <label for="aten_{{ i }}"></label>
                 {% endfor %}
             </div>
-            <input type="hidden" id="id_atencion_servicio" name="atencion_servicio" value="0">
         </div>
 
+        <!-- Recomendaciones -->
         <div class="form-group">
-            <label for="{{ form.atencion_servicio.id_for_label }}">Calificación del servicio (1-5)</label>
-            {{ form.atencion_servicio }}
-            {% if form.atencion_servicio.errors %}
-                <div class="error-feedback">
-                    {{ form.atencion_servicio.errors.0 }}
-                </div>
-            {% endif %}
+            <label for="{{ form.recomendaciones.id_for_label }}">¿Tienes alguna recomendación o comentario?</label>
+            {{ form.recomendaciones }}
         </div>
 
-        {% for field in form %}
-            {% if field.name not in 'experiencia_general,atencion_servicio' %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.help_text %}
-                <small class="form-text text-muted">{{ field.help_text }}</small>
-                {% endif %}
-                {% if field.errors %}
-                <div class="alert alert-danger">
-                    {{ field.errors }}
-                </div>
-                {% endif %}
-            </div>
-            {% endif %}
-        {% endfor %}
+        <!-- Hashtag -->
+        <div class="form-group">
+            <label for="{{ form.hashtag.id_for_label }}">Define el servicio en una palabra</label>
+            {{ form.hashtag }}
+        </div>
+
+        <!-- Respuesta Anónima -->
+        <div class="form-group checkbox-group">
+            <label for="{{ form.respuesta_anonima.id_for_label }}">
+                {{ form.respuesta_anonima }}
+                Mantener mi respuesta anónima
+            </label>
+        </div>
 
         <button type="submit" class="btn btn-primary">Enviar Encuesta</button>
     </form>

@@ -102,43 +102,46 @@ class ReportesService:
 
 
     def get_sentimientos_graph(self) -> str:
-        """Genera gráfico de sentimientos con Plotly"""
         sentimientos = self.get_sentimientos_totales()
         
         fig = go.Figure(data=[
             go.Bar(
-                x=['Sentimientos'],
-                y=[sentimientos['POS']],
-                name='Positivas',
-                marker_color='#00A9B8',
-                orientation='v'
-            ),
-            go.Bar(
-                x=['Sentimientos'],
-                y=[sentimientos['NEG']],
-                name='Negativas',
-                marker_color='#e74c3c',
-                orientation='v'
+                y=['Positivas', 'Negativas'],
+                x=[sentimientos['POS'], sentimientos['NEG']],
+                marker_color=['#00A9B8', '#e74c3c'],
+                orientation='h',
+                text=[sentimientos['POS'], sentimientos['NEG']],
+                textposition='inside',
+                insidetextanchor='middle',
+                textfont=dict(
+                    color='white',
+                    size=12,
+                    family='Poppins'
+                )
             )
         ])
 
         fig.update_layout(
-            barmode='stack',
+            showlegend=False,
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
             font_family="Poppins",
-            margin=dict(l=50, r=50, t=30, b=30),
-            showlegend=True,
-            legend=dict(
-                orientation="h",
-                yanchor="bottom",
-                y=1.02,
-                xanchor="right",
-                x=1
+            height=150,
+            margin=dict(l=20, r=20, t=20, b=20),
+            yaxis=dict(
+                showticklabels=True,
+                tickfont=dict(size=10),
+                showgrid=False
+            ),
+            xaxis=dict(
+                tickmode='linear',
+                tick0=0,
+                dtick=1,
+                showgrid=False
             )
         )
 
-        return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder) 
+        return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     def get_total_opiniones(self) -> Dict[str, int]:
         cache_key = f"total_opiniones_{self.negocio_id}"
@@ -177,3 +180,145 @@ class ReportesService:
             cache.set(cache_key, result, self.CACHE_TTL)
         
         return result
+
+    def get_distribucion_generos(self):
+        """Obtiene la distribución de géneros de los encuestados."""
+        return (
+            Encuesta.objects
+            .filter(
+                negocio_id=self.negocio_id,
+                encuesta_completada=True,
+                usuario__genero__isnull=False
+            )
+            .values('usuario__genero')
+            .annotate(total=Count('id'))
+            .order_by('-total')
+        )
+
+    def get_generos_graph(self) -> str:
+        generos = self.get_total_genero()
+        
+        fig = go.Figure(data=[
+            go.Bar(
+                y=['Masculino', 'Femenino'],
+                x=[generos['masculino'], generos['femenino']],
+                marker_color=['#4a90e2', '#e84393'],
+                orientation='h',
+                text=[generos['masculino'], generos['femenino']],
+                textposition='inside',
+                insidetextanchor='middle',
+                textfont=dict(
+                    color='white',
+                    size=12,
+                    family='Poppins'
+                )
+            )
+        ])
+
+        fig.update_layout(
+            showlegend=False,
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font_family="Poppins",
+            height=150,
+            margin=dict(l=20, r=20, t=20, b=20),
+            yaxis=dict(
+                showticklabels=True,
+                tickfont=dict(size=10),
+                showgrid=False
+            ),
+            xaxis=dict(
+                tickmode='linear',
+                tick0=0,
+                dtick=1,
+                showgrid=False
+            )
+        )
+
+        return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    def get_edades_totales(self) -> Dict[str, int]:
+        cache_key = f"total_edades_{self.negocio_id}"
+        result = cache.get(cache_key)
+        
+        if result is None:
+            result = {
+                'menor_18': Encuesta.objects.filter(
+                    empleado__negocio_id=self.negocio_id,
+                    usuario__edad__lt=18
+                ).count(),
+                '19_25': Encuesta.objects.filter(
+                    empleado__negocio_id=self.negocio_id,
+                    usuario__edad__gte=19,
+                    usuario__edad__lte=25
+                ).count(),
+                '26_35': Encuesta.objects.filter(
+                    empleado__negocio_id=self.negocio_id,
+                    usuario__edad__gte=26,
+                    usuario__edad__lte=35
+                ).count(),
+                '36_50': Encuesta.objects.filter(
+                    empleado__negocio_id=self.negocio_id,
+                    usuario__edad__gte=36,
+                    usuario__edad__lte=50
+                ).count(),
+                'mayor_60': Encuesta.objects.filter(
+                    empleado__negocio_id=self.negocio_id,
+                    usuario__edad__gt=60
+                ).count()
+            }
+            cache.set(cache_key, result, self.CACHE_TTL)
+        
+        return result
+
+    def get_edades_graph(self) -> str:
+        edades = self.get_edades_totales()
+        
+        # Definir el orden de las categorías
+        categorias = ['< 18', '19-25', '26-35', '36-50', '> 60']
+        valores = [
+            edades['menor_18'],
+            edades['19_25'],
+            edades['26_35'],
+            edades['36_50'],
+            edades['mayor_60']
+        ]
+        
+        fig = go.Figure(data=[
+            go.Bar(
+                y=categorias,  # Categorías de edad
+                x=valores,     # Cantidad de encuestados
+                marker_color=['#FF9F43', '#FF6B6B', '#4834D4', '#2C3E50', '#26DE81'],
+                orientation='h',
+                text=valores,
+                textposition='inside',
+                insidetextanchor='middle',
+                textfont=dict(
+                    color='white',
+                    size=12,
+                    family='Poppins'
+                )
+            )
+        ])
+
+        fig.update_layout(
+            showlegend=False,
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font_family="Poppins",
+            height=150,
+            margin=dict(l=20, r=20, t=20, b=20),
+            yaxis=dict(
+                showticklabels=True,
+                tickfont=dict(size=10),
+                showgrid=False
+            ),
+            xaxis=dict(
+                tickmode='linear',
+                tick0=0,
+                dtick=1,
+                showgrid=False
+            )
+        )
+
+        return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)

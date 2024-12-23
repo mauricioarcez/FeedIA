@@ -1,3 +1,14 @@
+/* Variables de estilo consistentes */
+:root {
+    --color-primary: #1D3C59;
+    --color-secondary: #00A9B8;
+    --color-background: #F5F5F5;
+    --color-text: #333333;
+    --color-light: #ffffff;
+    --font-main: 'Poppins', sans-serif;
+    --color-star: #ffd700;
+}
+
 /* Estilos para la lista de encuestas */
 .encuestas-list {
     display: grid;
@@ -255,4 +266,160 @@ input[name="codigo"]:focus {
 
 .star.active {
     color: #ffd700;
+}
+
+/* Estilos específicos para completar encuesta */
+.survey-container {
+    max-width: 800px;
+    margin: 90px auto 30px; /* Aumentado el margen superior */
+    padding: 2rem;
+    background-color: var(--color-light);
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    font-family: var(--font-main);
+}
+
+/* Encabezado de la encuesta */
+.survey-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.survey-header h2 {
+    color: var(--color-primary);
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-family: var(--font-main);
+}
+
+.survey-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.survey-info p {
+    color: var(--color-text);
+    font-size: 1rem;
+    margin: 0;
+    font-family: var(--font-main);
+}
+
+.survey-info strong {
+    color: var(--color-primary);
+}
+
+/* Formulario */
+.survey-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    color: var(--color-primary);
+    font-weight: 500;
+    margin-bottom: 0.8rem;
+    font-family: var(--font-main);
+}
+
+/* Sistema de calificación con estrellas */
+.rating-container {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.rating-container input[type="radio"] {
+    display: none;
+}
+
+.rating-container label {
+    cursor: pointer;
+    font-size: 2rem;
+    color: #ddd;
+    transition: color 0.2s ease;
+}
+
+.rating-container label:before {
+    content: '★';
+}
+
+.rating-container input[type="radio"]:checked ~ label,
+.rating-container label:hover,
+.rating-container label:hover ~ label {
+    color: var(--color-star);
+}
+
+.rating-container input[type="radio"]:checked + label:hover,
+.rating-container input[type="radio"]:checked + label:hover ~ label,
+.rating-container input[type="radio"]:checked ~ label:hover,
+.rating-container input[type="radio"]:checked ~ label:hover ~ label,
+.rating-container label:hover ~ input[type="radio"]:checked ~ label {
+    color: var(--color-star);
+    filter: brightness(110%);
+}
+
+/* Campos de texto y selección */
+.form-control {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e1e1e1;
+    border-radius: 10px;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 3px rgba(0, 169, 184, 0.1);
+}
+
+/* Botón de envío */
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: var(--color-secondary);
+    color: var(--color-light);
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: var(--font-main);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    box-shadow: 0 3px 10px rgba(0, 169, 184, 0.2);
+}
+
+.btn-primary:hover {
+    background: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(29, 60, 89, 0.3);
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .survey-container {
+        margin: 70px 1rem 1rem;
+        padding: 1.5rem;
+    }
+
+    .survey-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .rating-container {
+        justify-content: center;
+    }
 } 

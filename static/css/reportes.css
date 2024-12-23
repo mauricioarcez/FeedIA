@@ -13,7 +13,7 @@
 .reportes-dashboard {
     display: grid;
     grid-template-rows: auto 1fr 1fr;
-    gap: 1.5rem;
+    gap: 1rem;
     height: calc(100vh - 4rem);
     margin-right: -2rem;
     margin-top: -2rem;
@@ -23,7 +23,6 @@
     width: calc(98%);
     margin-left: 1rem;
     overflow-x: hidden;
-    border: 2px solid purple;
 }
 
 /* Contenedor de tarjetas horizontal (4 tarjetas)*/
@@ -31,10 +30,9 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 0.5rem;
     width: 100%;
     height: auto;
-    border: 2px solid blue;
 }
 
 /* Estilo individual de cada tarjeta */
@@ -46,7 +44,6 @@
     height: 100px;
     flex: 1;
     min-width: 0;
-    border: 2px solid green;
 }
 
 /* Sección del ranking */
@@ -54,26 +51,44 @@
     background: var(--color-light);        
     border-radius: 10px;                   
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);                         
-    height: 30vh;                          /* Altura fija para el ranking */
-    width: 100%;                           /* Ancho completo */
-    overflow-y: auto;                      /* Scroll vertical si es necesario */
-    border: 2px solid orange;
+    height: 30vh;                          
+    width: 100%;                           
+    overflow-y: auto;                      
 }
 
 /* Contenedor de los gráficos */
 .charts-container {
-    border: 2px solid red;
-    height: 190px;  /* Altura reducida */
-    margin: 0.5rem;  /* Margen reducido */
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.chart-wrapper {
+    background: var(--color-light);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    width: 300px;
+    height: 200px;
+    margin-left: 2rem;
+    font-family: var(--font-main);
+}
+
+.chart-wrapper h3 {
+    color: var(--color-primary);
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+    text-align: left;
+    font-family: var(--font-main);
+    font-weight: 500;
+    padding: 0 0.5rem;
 }
 
 /* Estilos de la tabla de ranking */
 .ranking-table {
     width: 100%;
     border-collapse: collapse;
-    border: 2px solid brown;
+    font-family: var(--font-main);
 }
 
 /* Contenido del encabezado */
@@ -108,6 +123,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    font-family: var(--font-main);
 }
 
 .sort-btn:hover {
@@ -135,6 +151,7 @@
 .ranking-table td,
 .ranking-table th {
     padding: 0.75rem 0.5rem;
+    font-family: var(--font-main);
 }
 
 .ranking-table td:nth-child(2),
@@ -267,12 +284,11 @@
 
 /* Gráfico de sentimiento */
 .sentiment-chart {
-    border: 2px solid pink;
     background: var(--color-light);
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     width: 100%;
-    max-width: 300px;  /* Ancho máximo reducido */
+    max-width: 300px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -284,4 +300,10 @@
     max-height: 100%;
     width: 100% !important;
     height: 100% !important;
+}
+
+#sentimientosGraph {
+    width: 100%;
+    height: calc(100% - 1.5rem);
+    font-family: var(--font-main);
 }

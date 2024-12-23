@@ -3,6 +3,9 @@ from django.db import models
 from django.utils import timezone
 from .ai import SentimentAnalyzer
 import string
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Empleado(models.Model):
     negocio = models.ForeignKey(
@@ -30,6 +33,12 @@ class Encuesta(models.Model):
         ('ocasional', 'Ocasional'),
     ]
 
+    SENTIMIENTO_CHOICES = [
+        ('positivo', 'Positivo'),
+        ('negativo', 'Negativo'),
+        ('neutral', 'Neutral'),
+    ]
+
     usuario = models.ForeignKey(
         'usuarios.CustomUser',
         on_delete=models.CASCADE,
@@ -44,7 +53,13 @@ class Encuesta(models.Model):
     fecha_respuesta = models.DateTimeField(auto_now_add=True)
     fecha_expiracion = models.DateTimeField()
     encuesta_completada = models.BooleanField(default=False)
-    sentimiento = models.CharField(max_length=10, null=True, blank=True)
+    sentimiento = models.CharField(
+        max_length=10,
+        choices=SENTIMIENTO_CHOICES,
+        null=True,
+        blank=True,
+        help_text="Sentimiento detectado en las recomendaciones"
+    )
     
     # Campos nuevos para el formulario
     tipo_cliente = models.CharField(
@@ -100,16 +115,19 @@ class Encuesta(models.Model):
         try:
             analyzer = SentimentAnalyzer()
             resultado = analyzer.analyze_with_cache([self.recomendaciones])[0]
-            print(f"Analizando sentimiento para: {self.recomendaciones}")
-            print(f"Resultado obtenido: {resultado}")
             
-            # Guardar el resultado del análisis
-            self.sentimiento = resultado['label']
+            # Mapear las etiquetas del modelo a nuestro formato
+            sentiment_mapping = {
+                'POS': 'positivo',
+                'NEG': 'negativo'
+            }
+            
+            self.sentimiento = sentiment_mapping.get(resultado['label'], 'neutral')
             self.save()
             
             return resultado
         except Exception as e:
-            print(f"Error al analizar sentimiento: {str(e)}")
+            logger.error(f"Error al analizar sentimiento: {str(e)}", exc_info=True)
             return None
 
     def clean(self):
