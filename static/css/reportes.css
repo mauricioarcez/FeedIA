@@ -13,12 +13,10 @@
 .reportes-dashboard {
     display: grid;
     grid-template-rows: auto 1fr 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
     height: calc(100vh - 4rem);
-    margin-right: -2rem;
-    margin-top: -2rem;
-    margin-left: -1rem;
-    padding: 1rem;
+    margin: -2rem -2rem  -1rem;
+    padding: 1.5rem;
     background: var(--color-background);
     width: calc(98%);
     margin-left: 1rem;
@@ -32,7 +30,7 @@
     justify-content: space-between;
     gap: 0.5rem;
     width: 100%;
-    height: 50px;
+    height: 70px;
     margin-bottom: 1rem;
 }
 
@@ -79,7 +77,7 @@
     background: var(--color-light);        
     border-radius: 10px;                   
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);                         
-    height: 35vh;                          
+    height: 100%;                          
     width: 100%;                           
     overflow-y: auto;
     padding: 1rem;
@@ -90,30 +88,37 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
     width: 100%;
-    padding: 0 0.5rem;
+    padding: 0.5rem 1rem;
 }
 
 .chart-wrapper {
     background: var(--color-light);
-    padding: 0.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 0.75rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     width: 95%;
     height: 180px;
     font-family: var(--font-main);
     margin: 0 auto;
+    transition: all 0.2s ease;
+}
+
+.chart-wrapper:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .chart-wrapper h3 {
     color: var(--color-primary);
-    font-size: 0.8rem;
-    margin-bottom: 0.2rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
     text-align: left;
     font-family: var(--font-main);
-    font-weight: 500;
+    font-weight: 600;
     padding: 0 0.5rem;
+    letter-spacing: 0.02em;
 }
 
 /* Estilos de la tabla de ranking */
@@ -375,4 +380,107 @@
     width: 100%;
     height: calc(100% - 1.5rem);
     font-family: var(--font-main);
+}
+
+/* Contenedor para la fila del medio */
+.middle-row-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* Divide en dos columnas iguales */
+    gap: 1rem;
+    width: 100%;
+    height: 35vh;
+}
+
+/* Estilos para la nueva tarjeta */
+.stats-card {
+    background: var(--color-light);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    height: 100%;
+    width: 100%;
+    padding: 1rem;
+}
+
+.stats-card h3 {
+    color: var(--color-primary);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-main);
+    font-weight: 500;
+}
+
+.stats-content {
+    height: calc(100% - 2rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Estilos para los hashtags */
+.hashtags-container {
+    width: 100%;
+    margin-top: -1rem;
+    font-family: var(--font-main);
+}
+
+.hashtags-container h4 {
+    color: var(--color-primary);
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 6px;
+    margin-bottom: 0.1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-family: var(--font-main);
+}
+
+.hashtags-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.02rem;
+    margin-top: 0.05rem;
+    padding: 0 0.3rem;
+    font-family: var(--font-main);
+}
+
+.hashtag-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.65rem;
+    padding: 0.05rem 0.3rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-family: var(--font-main);
+}
+
+.hashtag-item:hover {
+    background: rgba(0, 169, 184, 0.05);
+}
+
+.hashtag {
+    color: var(--color-secondary);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    font-family: var(--font-main);
+}
+
+.count {
+    background: rgba(0, 169, 184, 0.1);
+    color: var(--color-secondary);
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    min-width: 24px;
+    text-align: center;
+    font-family: var(--font-main);
+}
+
+.no-data {
+    color: var(--color-text);
+    opacity: 0.6;
+    font-size: 0.75rem;
+    font-style: italic;
 }

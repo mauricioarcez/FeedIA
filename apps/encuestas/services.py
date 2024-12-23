@@ -369,3 +369,24 @@ class ReportesService:
         )
 
         return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    def get_top_hashtags(self) -> List[Dict[str, any]]:
+        cache_key = f"top_hashtags_{self.negocio_id}"
+        result = cache.get(cache_key)
+        
+        if result is None:
+            # Obtener los hashtags de las encuestas completadas
+            hashtags = Encuesta.objects.filter(
+                negocio_id=self.negocio_id,
+                encuesta_completada=True,
+                hashtag__isnull=False
+            ).exclude(
+                hashtag=''
+            ).values('hashtag').annotate(
+                total=Count('hashtag')
+            ).order_by('-total')[:3]  # Top 3 hashtags
+            
+            result = list(hashtags)
+            cache.set(cache_key, result, self.CACHE_TTL)
+        
+        return result

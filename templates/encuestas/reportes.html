@@ -8,7 +8,19 @@
     <!-- Primera fila: Tarjetas de estadísticas -->
     <div class="cards-container">
         <div class="stat-card-r">
-            <!-- Contenido de la tarjeta 1 -->
+            <div class="hashtags-container">
+                <h4>Top Hashtags</h4>
+                <div class="hashtags-list">
+                    {% for tag in top_hashtags %}
+                        <div class="hashtag-item">
+                            <span class="hashtag"># {{ tag.hashtag }}</span>
+                            <span class="count">{{ tag.total }}</span>
+                        </div>
+                    {% empty %}
+                        <span class="no-data">Sin hashtags</span>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
         <div class="stat-card-r">
             <!-- Contenido de la     tarjeta 2 -->
@@ -21,50 +33,60 @@
         </div>
     </div>
 
-    <!-- Segunda fila: Ranking -->
-    <div class="ranking-section">
-        <table class="ranking-table">
-            <thead>
-                <tr>
-                    <th>Empleado</th>
-                    <th>
-                        <div class="header-content">
-                            <div class="sort-buttons">
-                                <button class="sort-btn {% if orden == 'total_desc' %}active{% endif %}" data-orden="total_desc">
-                                    <i class="fas fa-caret-up"></i>
-                                </button>
-                                <button class="sort-btn {% if orden == 'total_asc' %}active{% endif %}" data-orden="total_asc">
-                                    <i class="fas fa-caret-down"></i>
-                                </button>
+    <!-- Segunda fila: Ranking y Nueva Tarjeta -->
+    <div class="middle-row-container">
+        <div class="ranking-section">
+            <table class="ranking-table">
+                <thead>
+                    <tr>
+                        <th>Empleado</th>
+                        <th>
+                            <div class="header-content">
+                                <div class="sort-buttons">
+                                    <button class="sort-btn {% if orden == 'total_desc' %}active{% endif %}" data-orden="total_desc">
+                                        <i class="fas fa-caret-up"></i>
+                                    </button>
+                                    <button class="sort-btn {% if orden == 'total_asc' %}active{% endif %}" data-orden="total_asc">
+                                        <i class="fas fa-caret-down"></i>
+                                    </button>
+                                </div>
+                                <span>Total</span>
                             </div>
-                            <span>Total</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="header-content">
-                            <div class="sort-buttons">
-                                <button class="sort-btn {% if orden == 'calificacion_desc' %}active{% endif %}" data-orden="calificacion_desc">
-                                    <i class="fas fa-caret-up"></i>
-                                </button>
-                                <button class="sort-btn {% if orden == 'calificacion_asc' %}active{% endif %}" data-orden="calificacion_asc">
-                                    <i class="fas fa-caret-down"></i>
-                                </button>
+                        </th>
+                        <th>
+                            <div class="header-content">
+                                <div class="sort-buttons">
+                                    <button class="sort-btn {% if orden == 'calificacion_desc' %}active{% endif %}" data-orden="calificacion_desc">
+                                        <i class="fas fa-caret-up"></i>
+                                    </button>
+                                    <button class="sort-btn {% if orden == 'calificacion_asc' %}active{% endif %}" data-orden="calificacion_asc">
+                                        <i class="fas fa-caret-down"></i>
+                                    </button>
+                                </div>
+                                <span>Calif. Prom.</span>
                             </div>
-                            <span>Calif. Prom.</span>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for empleado in ranking_empleados %}
-                <tr class="{% if empleado.is_last %}last-place{% endif %}">
-                    <td>{{ empleado.nombre }}</td>
-                    <td>{{ empleado.total_encuestas }}</td>
-                    <td>{{ empleado.calificacion_promedio|floatformat:1 }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for empleado in ranking_empleados %}
+                    <tr class="{% if empleado.is_last %}last-place{% endif %}">
+                        <td>{{ empleado.nombre }}</td>
+                        <td>{{ empleado.total_encuestas }}</td>
+                        <td>{{ empleado.calificacion_promedio|floatformat:1 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="stats-card">
+            <!-- Aquí irá el contenido de la nueva tarjeta -->
+            <h3>Estadísticas Adicionales</h3>
+            <div class="stats-content">
+                <!-- Contenido futuro -->
+            </div>
+        </div>
     </div>
 
     <!-- Tercera fila: Gráficos -->

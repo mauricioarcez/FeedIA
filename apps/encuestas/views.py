@@ -190,7 +190,8 @@ def reportes(request):
         'orden': orden,
         'sentimientos_graph': service.get_sentimientos_graph(),
         'generos_graph': service.get_generos_graph(),
-        'edades_graph': service.get_edades_graph()
+        'edades_graph': service.get_edades_graph(),
+        'top_hashtags': service.get_top_hashtags(),
     }
     
     return render(request, 'encuestas/reportes.html', context)
