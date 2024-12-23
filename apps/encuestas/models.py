@@ -1,10 +1,7 @@
 import random
 from django.db import models
-from apps.usuarios.models import CustomUser
 from django.utils import timezone
-from datetime import timedelta
 from .ai import SentimentAnalyzer
-import logging
 import string
 
 class Empleado(models.Model):

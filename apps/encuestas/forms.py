@@ -27,12 +27,14 @@ class EncuestaForm(forms.ModelForm):
             'experiencia_general': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'min': '1',
-                'max': '5'
+                'max': '5',
+                'required': True
             }),
             'atencion_servicio': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'min': '1',
-                'max': '5'
+                'max': '5',
+                'required': True
             }),
             'recomendaciones': forms.Textarea(attrs={
                 'class': 'form-control',

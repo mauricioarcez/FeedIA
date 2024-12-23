@@ -1,5 +1,5 @@
 from django.core.cache import cache
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, Count, Q, Case, When, FloatField
 from django.db.models.functions import Coalesce
 from typing import Dict, List
 import plotly.graph_objects as go
@@ -21,25 +21,50 @@ class ReportesService:
         if result is None:
             empleados = Empleado.objects.filter(
                 negocio_id=self.negocio_id,
-                activo=True
+                activo=True,
+                encuestas__encuesta_completada=True  # Solo encuestas completadas
             ).annotate(
-                total_encuestas=Count('encuestas'),
+                total_encuestas=Count(
+                    'encuestas',
+                    filter=Q(
+                        encuestas__encuesta_completada=True,
+                        encuestas__atencion_servicio__isnull=False
+                    )
+                ),
                 calificacion_promedio=Coalesce(
-                    Avg('encuestas__atencion_servicio'),
+                    Avg(
+                        Case(
+                            When(
+                                encuestas__encuesta_completada=True,
+                                encuestas__atencion_servicio__isnull=False,
+                                then='encuestas__atencion_servicio'
+                            ),
+                            output_field=FloatField(),
+                        )
+                    ),
                     0.0
                 )
-            )
+            ).filter(total_encuestas__gt=0)
             
-            # Convertir a lista y ordenar según el criterio seleccionado
+            # Debug: Imprimir valores para verificar
+            print("Empleados y calificaciones:")
+            for emp in empleados:
+                print(f"Empleado: {emp.nombre}, Total: {emp.total_encuestas}, Promedio: {emp.calificacion_promedio}")
+                # Imprimir todas las calificaciones del empleado
+                calificaciones = emp.encuestas.filter(
+                    encuesta_completada=True
+                ).values_list('atencion_servicio', flat=True)
+                print(f"Calificaciones individuales: {list(calificaciones)}")
+            
             empleados_list = list(empleados)
             
-            # Definir la clave y dirección de ordenamiento
+            # Ordenamiento
             reverse = orden.endswith('_desc')
             if orden.startswith('total'):
                 key = lambda x: (x.total_encuestas, x.calificacion_promedio)
             else:  # orden por calificación
                 key = lambda x: (x.calificacion_promedio, x.total_encuestas)
-                
+            
             empleados_list.sort(key=key, reverse=reverse)
             
             # Tomar solo el top 2 y el último
@@ -49,8 +74,8 @@ class ReportesService:
             result = [{
                 'nombre': f"{emp.nombre} {emp.apellido}",
                 'total_encuestas': emp.total_encuestas,
-                'calificacion_promedio': float(emp.calificacion_promedio),
-                'is_last': emp == empleados_list[-1]
+                'calificacion_promedio': round(float(emp.calificacion_promedio), 1),
+                'is_last': emp == empleados_list[-1] if empleados_list else False
             } for emp in empleados_list]
             
             cache.set(cache_key, result, self.CACHE_TTL)

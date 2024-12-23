@@ -46,6 +46,16 @@
             <input type="hidden" id="id_atencion_servicio" name="atencion_servicio" value="0">
         </div>
 
+        <div class="form-group">
+            <label for="{{ form.atencion_servicio.id_for_label }}">Calificación del servicio (1-5)</label>
+            {{ form.atencion_servicio }}
+            {% if form.atencion_servicio.errors %}
+                <div class="error-feedback">
+                    {{ form.atencion_servicio.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
         {% for field in form %}
             {% if field.name not in 'experiencia_general,atencion_servicio' %}
             <div class="form-group">

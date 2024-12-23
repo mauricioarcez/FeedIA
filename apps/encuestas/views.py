@@ -16,7 +16,7 @@ def crear_encuesta(request):
     """Vista para crear una nueva encuesta"""
     if not request.user.is_business_user():
         messages.error(request, 'Solo los negocios pueden crear encuestas.')
-        return redirect('home')
+        return redirect('inicio')
 
     if request.method == 'POST':
         try:
@@ -58,17 +58,25 @@ def completar_encuesta(request, codigo):
             if form.is_valid():
                 encuesta_respuesta = form.save(commit=False)
                 encuesta_respuesta.usuario = request.user
-                encuesta_respuesta.save()  # Primero guardamos para tener el ID
+                encuesta_respuesta.encuesta_completada = True
                 
-                # Analizar sentimiento y asegurarnos que se guarde
+                # Asegurarnos de que la calificación se guarde
+                if 'atencion_servicio' in form.cleaned_data:
+                    encuesta_respuesta.atencion_servicio = form.cleaned_data['atencion_servicio']
+                
+                encuesta_respuesta.save()
+                
+                # Debug: Imprimir información
+                print(f"Encuesta guardada - ID: {encuesta_respuesta.id}")
+                print(f"Atención servicio: {encuesta_respuesta.atencion_servicio}")
+                print(f"Empleado: {encuesta_respuesta.empleado}")
+                
+                # Analizar sentimiento
                 resultado = encuesta_respuesta.analizar_sentimiento()
-                print(f"Resultado del análisis: {resultado}")  # Debug
-                
                 if resultado:
                     encuesta_respuesta.sentimiento = resultado['label']
-                    encuesta_respuesta.save()  # Guardar de nuevo con el sentimiento
+                    encuesta_respuesta.save()
                 
-                encuesta_respuesta.encuesta_completada = True
                 encuesta_respuesta.marcar_codigo_como_usado()
                 
                 # Sumar puntos al usuario
@@ -76,7 +84,7 @@ def completar_encuesta(request, codigo):
                 request.user.save()
                 
                 messages.success(request, '¡Gracias por completar la encuesta! Se te han sumado 2 puntos.')
-                return redirect('usuarios:home')
+                return redirect('usuarios:home_common')
         else:
             form = EncuestaForm(instance=encuesta)
         
@@ -86,7 +94,7 @@ def completar_encuesta(request, codigo):
         })
     except Encuesta.DoesNotExist:
         messages.error(request, 'Código de encuesta no válido o expirado.')
-        return redirect('usuarios:home')
+        return redirect('usuarios:home_common')
 
 # ------------------------------------------------------------------------------------------------
 
@@ -109,7 +117,7 @@ def ver_encuestas(request):
         return render(request, 'encuestas/ver_encuestas.html', context)
     else:
         messages.error(request, "No tienes permiso para ver esta página")
-        return redirect('usuarios:home')
+        return redirect('usuarios:home_common')
 
 # ------------------------------------------------------------------------------------------------
 @login_required
@@ -139,7 +147,7 @@ def ingresar_codigo(request):
 def administrar_empleados(request):
     if not request.user.is_business_user():
         messages.error(request, "Acceso denegado")
-        return redirect('home')
+        return redirect('inicio')
         
     empleados = Empleado.objects.filter(negocio=request.user)
     
@@ -172,8 +180,16 @@ def toggle_empleado(request, empleado_id):
 
 @login_required
 def reportes(request):
+    # Verificar que sea un usuario de tipo negocio
+    if request.user.user_type != 'business':
+        messages.error(request, "No tienes permisos para ver los reportes.")
+        return redirect('inicio')
+    
+    # El ID del negocio es el mismo ID del usuario business
+    negocio_id = request.user.id
+    
     orden = request.GET.get('orden', 'calificacion_desc')
-    service = ReportesService(request.user.id)
+    service = ReportesService(negocio_id)
     ranking_empleados = service.get_ranking_empleados(orden)
     
     # Obtener totales de opiniones

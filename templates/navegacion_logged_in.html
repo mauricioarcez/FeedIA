@@ -1,7 +1,16 @@
 {% load static %}
-<div class="sidebar">
+<div class="mobile-nav-header">
+    <div class="logo-container-mobile">
+        <img src="{% static 'img/Logo_sin_fondo.png' %}" alt="Logo FeedIA" class="logo-mobile">
+    </div>
+    <button class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+</div>
+
+<div class="sidebar" id="sidebar">
     <div class="logo-container">
-        <img src="{% static 'img/Logo_feedia.png' %}" alt="Logo FeedIA" class="logo">
+        <img src="{% static 'img/Logo_sin_fondo.png' %}" alt="Logo FeedIA" class="logo">
     </div>
     <nav>
         <ul>
@@ -22,9 +31,15 @@
             {% if user.user_type == 'common' %}
             <div class="nav-section">
                 <li>
-                    <a href="#" class="{% if request.resolver_match.url_name == 'canjear' %}active{% endif %}">
-                        <i class="fas fa-gift"></i>
-                        <span>Canjear Puntos</span>
+                    <a href="#" class="{% if request.resolver_match.url_name == 'ver_negocios' %}active{% endif %}">
+                        <i class="fas fa-store"></i>
+                        <span>Ver Negocios</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="{% if request.resolver_match.url_name == 'ranking_feeders' %}active{% endif %}">
+                        <i class="fas fa-trophy"></i>
+                        <span>Ranking Feeders</span>
                     </a>
                 </li>
                 <li>
@@ -72,3 +87,20 @@
         </ul>
     </nav>
 </div>
+
+<script>
+    function toggleMenu() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('active');
+    }
+    
+    // Cerrar menú al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const hamburger = document.querySelector('.hamburger-menu');
+        
+        if (!sidebar.contains(event.target) && !hamburger.contains(event.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
+</script>
