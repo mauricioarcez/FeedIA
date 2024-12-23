@@ -34,9 +34,9 @@ class Encuesta(models.Model):
     ]
 
     SENTIMIENTO_CHOICES = [
-        ('positivo', 'Positivo'),
-        ('negativo', 'Negativo'),
-        ('neutral', 'Neutral'),
+        ('POS', 'Positivo'),
+        ('NEU', 'Neutral'),
+        ('NEG', 'Negativo'),
     ]
 
     usuario = models.ForeignKey(
@@ -54,11 +54,10 @@ class Encuesta(models.Model):
     fecha_expiracion = models.DateTimeField()
     encuesta_completada = models.BooleanField(default=False)
     sentimiento = models.CharField(
-        max_length=10,
+        max_length=3,
         choices=SENTIMIENTO_CHOICES,
         null=True,
-        blank=True,
-        help_text="Sentimiento detectado en las recomendaciones"
+        blank=True
     )
     
     # Campos nuevos para el formulario
@@ -118,11 +117,12 @@ class Encuesta(models.Model):
             
             # Mapear las etiquetas del modelo a nuestro formato
             sentiment_mapping = {
-                'POS': 'positivo',
-                'NEG': 'negativo'
+                'POS': 'POS',
+                'NEG': 'NEG',
+                'NEU': 'NEU'
             }
             
-            self.sentimiento = sentiment_mapping.get(resultado['label'], 'neutral')
+            self.sentimiento = sentiment_mapping.get(resultado['label'], 'NEU')
             self.save()
             
             return resultado

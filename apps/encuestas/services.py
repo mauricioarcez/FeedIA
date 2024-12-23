@@ -6,10 +6,21 @@ import plotly.graph_objects as go
 import plotly.utils
 import json
 from apps.encuestas.models import Encuesta, Empleado
+from django.utils import timezone
+from datetime import date, timedelta
 
 # --------------------------------------------------------------------------------------------
 class ReportesService:
     CACHE_TTL = 3600  # 1 hora en segundos
+    # Paleta de colores profesional
+    COLORS = {
+        'primary': '#1D3C59',    # Azul oscuro
+        'secondary': '#00A9B8',  # Turquesa
+        'accent1': '#4A90E2',    # Azul claro
+        'accent2': '#F39C12',    # Naranja
+        'accent3': '#E74C3C',    # Rojo
+        'neutral': '#95A5A6'     # Gris
+    }
     
     def __init__(self, negocio_id: int):
         self.negocio_id = negocio_id
@@ -94,6 +105,7 @@ class ReportesService:
             )
             result = {
                 'POS': encuestas.filter(sentimiento='POS').count(),
+                'NEU': encuestas.filter(sentimiento='NEU').count(),
                 'NEG': encuestas.filter(sentimiento='NEG').count()
             }
             cache.set(cache_key, result, self.CACHE_TTL)
@@ -106,13 +118,16 @@ class ReportesService:
         
         fig = go.Figure(data=[
             go.Bar(
-                y=['Positivas', 'Negativas'],
-                x=[sentimientos['POS'], sentimientos['NEG']],
-                marker_color=['#00A9B8', '#e74c3c'],
+                y=['Positivas', 'Neutrales', 'Negativas'],
+                x=[sentimientos['POS'], sentimientos['NEU'], sentimientos['NEG']],
+                marker_color=[self.COLORS['secondary'], 
+                            self.COLORS['neutral'], 
+                            self.COLORS['accent3']],
                 orientation='h',
-                text=[sentimientos['POS'], sentimientos['NEG']],
+                text=[sentimientos['POS'], sentimientos['NEU'], sentimientos['NEG']],
                 textposition='inside',
                 insidetextanchor='middle',
+                textangle=0,
                 textfont=dict(
                     color='white',
                     size=12,
@@ -153,6 +168,10 @@ class ReportesService:
                     empleado__negocio_id=self.negocio_id,
                     sentimiento='POS'
                 ).count(),
+                'neutrales': Encuesta.objects.filter(
+                    empleado__negocio_id=self.negocio_id,
+                    sentimiento='NEU'
+                ).count(),
                 'negativas': Encuesta.objects.filter(
                     empleado__negocio_id=self.negocio_id,
                     sentimiento='NEG'
@@ -170,11 +189,15 @@ class ReportesService:
             result = {
                 'masculino': Encuesta.objects.filter(
                     empleado__negocio_id=self.negocio_id,
-                    usuario__genero='M'  # Usamos el género del usuario que creó la encuesta
+                    usuario__genero='M'
                 ).count(),
                 'femenino': Encuesta.objects.filter(
                     empleado__negocio_id=self.negocio_id,
-                    usuario__genero='F'  # Usamos el género del usuario que creó la encuesta
+                    usuario__genero='F'
+                ).count(),
+                'otro': Encuesta.objects.filter(
+                    empleado__negocio_id=self.negocio_id,
+                    usuario__genero='O'
                 ).count()
             }
             cache.set(cache_key, result, self.CACHE_TTL)
@@ -200,13 +223,18 @@ class ReportesService:
         
         fig = go.Figure(data=[
             go.Bar(
-                y=['Masculino', 'Femenino'],
-                x=[generos['masculino'], generos['femenino']],
-                marker_color=['#4a90e2', '#e84393'],
+                y=['Masculino', 'Femenino', 'Otro'],
+                x=[generos['masculino'], generos['femenino'], generos['otro']],
+                marker_color=[
+                    self.COLORS['primary'], 
+                    self.COLORS['secondary'],
+                    self.COLORS['accent1']
+                ],
                 orientation='h',
-                text=[generos['masculino'], generos['femenino']],
+                text=[generos['masculino'], generos['femenino'], generos['otro']],
                 textposition='inside',
                 insidetextanchor='middle',
+                textangle=0,
                 textfont=dict(
                     color='white',
                     size=12,
@@ -242,29 +270,41 @@ class ReportesService:
         result = cache.get(cache_key)
         
         if result is None:
+            today = timezone.now().date()
+            
+            # Base query para encuestas completadas del negocio
+            base_query = Encuesta.objects.filter(
+                negocio_id=self.negocio_id,
+                encuesta_completada=True
+            ).values('usuario').distinct()  # Usar values() y distinct() en lugar de distinct(campo)
+            
             result = {
-                'menor_18': Encuesta.objects.filter(
-                    empleado__negocio_id=self.negocio_id,
-                    usuario__edad__lt=18
+                'menor_18': base_query.filter(
+                    usuario__fecha_nacimiento__isnull=False,
+                    usuario__fecha_nacimiento__gt=today - timedelta(days=18*365)
                 ).count(),
-                '19_25': Encuesta.objects.filter(
-                    empleado__negocio_id=self.negocio_id,
-                    usuario__edad__gte=19,
-                    usuario__edad__lte=25
+                
+                '19_25': base_query.filter(
+                    usuario__fecha_nacimiento__isnull=False,
+                    usuario__fecha_nacimiento__lte=today - timedelta(days=19*365),
+                    usuario__fecha_nacimiento__gt=today - timedelta(days=25*365)
                 ).count(),
-                '26_35': Encuesta.objects.filter(
-                    empleado__negocio_id=self.negocio_id,
-                    usuario__edad__gte=26,
-                    usuario__edad__lte=35
+                
+                '26_35': base_query.filter(
+                    usuario__fecha_nacimiento__isnull=False,
+                    usuario__fecha_nacimiento__lte=today - timedelta(days=26*365),
+                    usuario__fecha_nacimiento__gt=today - timedelta(days=35*365)
                 ).count(),
-                '36_50': Encuesta.objects.filter(
-                    empleado__negocio_id=self.negocio_id,
-                    usuario__edad__gte=36,
-                    usuario__edad__lte=50
+                
+                '36_50': base_query.filter(
+                    usuario__fecha_nacimiento__isnull=False,
+                    usuario__fecha_nacimiento__lte=today - timedelta(days=36*365),
+                    usuario__fecha_nacimiento__gt=today - timedelta(days=50*365)
                 ).count(),
-                'mayor_60': Encuesta.objects.filter(
-                    empleado__negocio_id=self.negocio_id,
-                    usuario__edad__gt=60
+                
+                'mayor_60': base_query.filter(
+                    usuario__fecha_nacimiento__isnull=False,
+                    usuario__fecha_nacimiento__lte=today - timedelta(days=60*365)
                 ).count()
             }
             cache.set(cache_key, result, self.CACHE_TTL)
@@ -286,13 +326,20 @@ class ReportesService:
         
         fig = go.Figure(data=[
             go.Bar(
-                y=categorias,  # Categorías de edad
-                x=valores,     # Cantidad de encuestados
-                marker_color=['#FF9F43', '#FF6B6B', '#4834D4', '#2C3E50', '#26DE81'],
+                y=['< 18', '19-25', '26-35', '36-50', '> 60'],
+                x=valores,
+                marker_color=[
+                    self.COLORS['accent1'],
+                    self.COLORS['secondary'],
+                    self.COLORS['primary'],
+                    self.COLORS['accent2'],
+                    self.COLORS['neutral']
+                ],
                 orientation='h',
                 text=valores,
                 textposition='inside',
                 insidetextanchor='middle',
+                textangle=0,
                 textfont=dict(
                     color='white',
                     size=12,

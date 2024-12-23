@@ -2,19 +2,28 @@ from django import forms
 from .models import CustomUser
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
+from datetime import datetime
 
 
 class CommonUserRegistrationForm(forms.ModelForm):
     """Formulario de registro para usuarios comunes"""
     
     password = forms.CharField(widget=forms.PasswordInput)  # Campo para la contraseña
-    genero_choices = [
-        ('M', 'Masculino'),
-        ('F', 'Femenino'),
-        ('O', 'Otro'),
-    ]
-    genero = forms.ChoiceField(choices=genero_choices)  # Campo para género
-    fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))  # Campo para fecha de nacimiento
+    genero = forms.ChoiceField(
+        choices=CustomUser.GENERO_CHOICES,
+        required=True,  # Obligatorio para usuarios comunes
+        error_messages={'required': 'Por favor selecciona tu género'}
+    )
+    
+    fecha_nacimiento = forms.DateField(
+        required=True,  # Obligatorio para usuarios comunes
+        widget=forms.DateInput(attrs={
+            'type': 'date',
+            'class': 'form-control'
+        }),
+        error_messages={'required': 'Por favor ingresa tu fecha de nacimiento'}
+    )
+    
     correo = forms.EmailField(max_length=60)  # Campo para el correo
     
     # Nuevos campos para ubicación
@@ -69,37 +78,38 @@ class CommonUserRegistrationForm(forms.ModelForm):
 
         return user
 
+    def clean(self):
+        cleaned_data = super().clean()
+        # Validaciones específicas para campos obligatorios
+        if not cleaned_data.get('genero'):
+            self.add_error('genero', 'Este campo es obligatorio')
+        if not cleaned_data.get('fecha_nacimiento'):
+            self.add_error('fecha_nacimiento', 'Este campo es obligatorio')
+        return cleaned_data
+
+    def clean_fecha_nacimiento(self):
+        fecha = self.cleaned_data.get('fecha_nacimiento')
+        if fecha:
+            # Validar que la fecha no sea futura
+            if fecha > datetime.now().date():
+                raise forms.ValidationError('La fecha no puede ser futura')
+            
+            # Validar edad mínima
+            edad = (datetime.now().date() - fecha).days / 365
+            if edad < 13:
+                raise forms.ValidationError('Debes tener al menos 13 años para registrarte')
+        
+        return fecha
+
 
 # ------------------------------------------------------------------------------------------------------
 
 class BusinessUserRegistrationForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'correo', 'password', 'provincia', 'ciudad', 'nombre_negocio', 'first_name', 'last_name']
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        # Encriptar la contraseña
-        user.set_password(self.cleaned_data['password'])
-        
-        # Establecer explícitamente el tipo de usuario como 'business'
-        user.user_type = 'business'
-        
-        # Normalizar la provincia
-        if self.cleaned_data.get('provincia'):
-            user.provincia = self.cleaned_data['provincia'].lower().capitalize()
-        
-        # Asegurarse de que los campos requeridos estén establecidos
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        user.nombre_negocio = self.cleaned_data['nombre_negocio']
-        user.correo = self.cleaned_data['correo']
-        user.ciudad = self.cleaned_data['ciudad']
-        
-        if commit:
-            user.save()
-        
-        return user
+        fields = ['username', 'correo', 'password', 'provincia', 'ciudad', 
+                 'nombre_negocio', 'first_name', 'last_name']
+        # No incluimos género ni fecha_nacimiento
 
 # ------------------------------------------------------------------------------------------------------
 

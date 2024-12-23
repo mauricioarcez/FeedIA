@@ -38,12 +38,12 @@ class CustomUser(AbstractUser):
     provincia = models.CharField(max_length=50, blank=False)
     ciudad = models.CharField(max_length=60, blank=False)
     
-    # Campo de género
+    # Campo de género - Ahora puede ser nulo para negocios
     genero = models.CharField(
         max_length=1,
         choices=GENERO_CHOICES,
-        blank=False,  # No permitir valores en blanco
-        null=False   # No permitir valores nulos
+        blank=True,  # Permitir valores en blanco
+        null=True    # Permitir valores nulos
     )
     
     # Validación personalizada de correo
@@ -59,6 +59,13 @@ class CustomUser(AbstractUser):
             raise ValidationError('La ciudad es obligatoria.')
         if not self.provincia:
             raise ValidationError('La provincia es obligatoria.')
+        
+        # Validaciones específicas para usuario común
+        if self.user_type == 'common':
+            if not self.genero:
+                raise ValidationError('El género es obligatorio para usuarios comunes.')
+            if not self.fecha_nacimiento:
+                raise ValidationError('La fecha de nacimiento es obligatoria para usuarios comunes.')
 
     def is_common_user(self):
         return self.user_type == 'common'
@@ -94,7 +101,7 @@ class CustomUser(AbstractUser):
         self.codigo_usado = True
         self.save()
 
-    fecha_nacimiento = models.DateField(null=True, blank=True)  # Agregado
+    fecha_nacimiento = models.DateField(null=True, blank=True)
 
     @property
     def edad(self):

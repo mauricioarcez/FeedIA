@@ -32,18 +32,46 @@
     justify-content: space-between;
     gap: 0.5rem;
     width: 100%;
-    height: auto;
+    height: 50px;
+    margin-bottom: 1rem;
 }
 
 /* Estilo individual de cada tarjeta */
-.stat-card {
+.stat-card-r {
     background: var(--color-light);
-    border-radius: 10px;
+    border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    padding: 1rem;
-    height: 100px;
+    padding: 0.5rem;
+    height: 100%;
     flex: 1;
     min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Estilos para el contenido de las tarjetas */
+.stat-card .stat-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0;
+    line-height: 1;
+}
+
+.stat-card .stat-label {
+    font-size: 0.7rem;
+    color: var(--color-text);
+    opacity: 0.8;
+    margin: 0;
+    line-height: 1;
+}
+
+/* Contenedor de información dentro de la tarjeta */
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 /* Sección del ranking */
@@ -51,33 +79,37 @@
     background: var(--color-light);        
     border-radius: 10px;                   
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);                         
-    height: 30vh;                          
+    height: 35vh;                          
     width: 100%;                           
-    overflow-y: auto;                      
+    overflow-y: auto;
+    padding: 1rem;
 }
 
 /* Contenedor de los gráficos */
 .charts-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
     margin-top: 0.5rem;
+    width: 100%;
+    padding: 0 0.5rem;
 }
 
 .chart-wrapper {
     background: var(--color-light);
+    padding: 0.5rem;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    width: 300px;
-    height: 200px;
-    margin-left: 2rem;
+    width: 95%;
+    height: 180px;
     font-family: var(--font-main);
+    margin: 0 auto;
 }
 
 .chart-wrapper h3 {
     color: var(--color-primary);
-    font-size: 0.85rem;
-    margin-bottom: 0.3rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
     text-align: left;
     font-family: var(--font-main);
     font-weight: 500;
@@ -87,8 +119,55 @@
 /* Estilos de la tabla de ranking */
 .ranking-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
     font-family: var(--font-main);
+}
+
+.ranking-table thead th {
+    background: var(--color-background);
+    padding: 1rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.ranking-table tbody tr {
+    background: white;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.ranking-table tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.ranking-table td {
+    padding: 1rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Estilo para el primer lugar */
+.ranking-table tr:first-child {
+    background: rgba(0, 169, 184, 0.1);
+}
+
+.ranking-table tr:first-child td {
+    color: var(--color-secondary);
+    font-weight: 500;
+}
+
+/* Estilo para el último lugar */
+.ranking-table tr.last-place {
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.ranking-table tr.last-place td {
+    color: #e74c3c;
+    font-weight: 500;
 }
 
 /* Contenido del encabezado */
@@ -157,16 +236,6 @@
 .ranking-table td:nth-child(2),
 .ranking-table td:nth-child(3) {
     text-align: center;
-}
-
-/* Estilo para la última fila */
-.ranking-table tr.last-place {
-    background-color: rgba(231, 76, 60, 0.1);
-}
-
-.ranking-table tr.last-place td {
-    color: #c0392b;
-    font-weight: 500;
 }
 
 /* Estilos para los badges de sentimiento */
