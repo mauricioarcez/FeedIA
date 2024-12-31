@@ -57,15 +57,11 @@ class ReportesService:
                 )
             ).filter(total_encuestas__gt=0)
             
-            # Debug: Imprimir valores para verificar
-            print("Empleados y calificaciones:")
             for emp in empleados:
-                print(f"Empleado: {emp.nombre}, Total: {emp.total_encuestas}, Promedio: {emp.calificacion_promedio}")
                 # Imprimir todas las calificaciones del empleado
                 calificaciones = emp.encuestas.filter(
                     encuesta_completada=True
                 ).values_list('atencion_servicio', flat=True)
-                print(f"Calificaciones individuales: {list(calificaciones)}")
             
             empleados_list = list(empleados)
             
@@ -391,8 +387,6 @@ class ReportesService:
         start_date = timezone.make_aware(timezone.datetime(today.year, today.month, 1))  # Primer día del mes actual
         end_date = timezone.make_aware(timezone.datetime(today.year, today.month, 1) + timedelta(days=31)).replace(day=1) - timedelta(days=1)  # Último día del mes actual
 
-        print(f"Rango de fechas: {start_date} a {end_date}")  # Imprimir el rango de fechas
-
         # Realizar la consulta sin TruncDate
         encuestas_por_dia = (
             Encuesta.objects.filter(
@@ -404,20 +398,12 @@ class ReportesService:
             .order_by('fecha_respuesta')  # Ordenar por fecha
         )
 
-        # Imprimir el resultado de la consulta
-        print(f"Resultados de la consulta: {list(encuestas_por_dia)}")  # Imprimir las encuestas por día
-
         # Crear un diccionario con días del mes y sus totales
         result = {day: 0 for day in range(1, 32)}
         for entry in encuestas_por_dia:
-            print(f"Entry: {entry}")  # Imprimir cada entrada
             if entry['fecha_respuesta'] is not None:  # Verificar que no sea None
                 day = entry['fecha_respuesta'].day  # Acceder al atributo 'day'
                 result[day] += entry['total']  # Sumar el total para ese día
-            else:
-                print("Fecha es None, no se puede procesar esta entrada.")  # Mensaje de advertencia
-
-        print(f"Resultados por día: {result}")  # Imprimir el resultado antes de devolverlo
         return result
 
     def get_encuestas_por_dia_graph(self, negocio) -> str:
@@ -475,4 +461,83 @@ class ReportesService:
         )
 
         fig = go.Figure(data=[trace], layout=layout)
+        return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    def get_tipos_clientes_graph(self) -> str:
+        """Genera un gráfico de barras apiladas horizontales que muestra el porcentaje de todos los tipos de clientes."""
+        # Obtener los conteos de tipos de clientes
+        nuevos = Encuesta.objects.filter(empleado__negocio_id=self.negocio_id, tipo_cliente='nuevo').count()
+        recurrentes = Encuesta.objects.filter(empleado__negocio_id=self.negocio_id, tipo_cliente='recurrente').count()
+        ocasionales = Encuesta.objects.filter(empleado__negocio_id=self.negocio_id, tipo_cliente='ocasional').count()
+
+        # Datos para el gráfico
+        conteos = [nuevos, recurrentes, ocasionales]
+        total = sum(conteos)
+        porcentajes = [(count / total * 100) if total > 0 else 0 for count in conteos]
+
+        # Crear el gráfico de barras apiladas horizontales
+        fig = go.Figure()
+
+        # Agregar cada tipo de cliente como una barra apilada horizontal
+        fig.add_trace(go.Bar(
+            x=[porcentajes[0]],  # Porcentaje de nuevos
+            y=['Clientes'],  # Solo una barra para todos los tipos
+            name='Nuevos',
+            orientation='h',  # Cambiar a orientación horizontal
+            marker=dict(color=self.COLORS['accent1']),
+            text=f"{porcentajes[0]:.1f}%",
+            textposition='inside',
+            insidetextanchor='middle',
+            textfont=dict(color='white', size=12),
+        ))
+
+        fig.add_trace(go.Bar(
+            x=[porcentajes[1]],  # Porcentaje de recurrentes
+            y=['Clientes'],  # Solo una barra para todos los tipos
+            name='Recurrentes',
+            orientation='h',  # Cambiar a orientación horizontal
+            marker=dict(color=self.COLORS['accent2']),
+            text=f"{porcentajes[1]:.1f}%",
+            textposition='inside',
+            insidetextanchor='middle',
+            textfont=dict(color='white', size=12),
+        ))
+
+        fig.add_trace(go.Bar(
+            x=[porcentajes[2]],  # Porcentaje de ocasionales
+            y=['Clientes'],  # Solo una barra para todos los tipos
+            name='Ocasionales',
+            orientation='h',  # Cambiar a orientación horizontal
+            marker=dict(color=self.COLORS['accent3']),
+            text=f"{porcentajes[2]:.1f}%",
+            textposition='inside',
+            insidetextanchor='middle',
+            textfont=dict(color='white', size=12),
+        ))
+
+        # Configurar el layout del gráfico
+        fig.update_layout(
+            title='Tipos de Clientes',
+            titlefont=dict(size=14, color=self.COLORS['primary']),
+            barmode='stack',  # Establecer el modo de apilamiento
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font_family="Poppins",
+            height=150,
+            margin=dict(l=20, r=20, t=20, b=20),  # Asegurando que el margen esté presente
+            xaxis=dict(
+                title='Porcentaje',
+                titlefont=dict(size=12, color=self.COLORS['primary']),
+                tickfont=dict(size=10),
+                showgrid=False,
+                range=[0, 100]
+            ),
+            yaxis=dict(
+                title='Clientes',
+                titlefont=dict(size=12, color=self.COLORS['primary']),
+                tickfont=dict(size=10),
+                showgrid=False
+            )
+        )
+
         return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)

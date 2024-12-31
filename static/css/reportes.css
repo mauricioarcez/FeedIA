@@ -1,4 +1,6 @@
-/* Define variables globales para usar en toda la aplicación */
+/* ---------------------------- 
+   Define variables globales para usar en toda la aplicación 
+   ---------------------------- */
 :root {
     --color-primary: #1D3C59;    /* Color principal, azul oscuro */
     --color-secondary: #00A9B8;  /* Color secundario, turquesa */
@@ -9,7 +11,9 @@
     --sidebar-width: 280px;      /* Ancho fijo de la barra lateral */
 }
 
-/* Contenedor principal del dashboard de reportes */
+/* ---------------------------- 
+   Contenedor principal del dashboard de reportes 
+   ---------------------------- */
 .reportes-dashboard {
     display: grid;
     grid-template-rows: auto 1fr 1fr;
@@ -18,38 +22,49 @@
     margin: -2rem -2rem  -1rem;
     padding: 1.5rem;
     background: var(--color-background);
-    width: calc(98%);
+    width: calc(96%);
     margin-left: 1rem;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
-/* Contenedor de tarjetas horizontal (4 tarjetas)*/
+/* ---------------------------- 
+   Contenedor de tarjetas horizontal (4 tarjetas) 
+   ---------------------------- */
 .cards-container {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 0.5rem;
+    flex-wrap: nowrap;
+    gap: 20px;
     width: 100%;
-    height: 70px;
-    margin-bottom: 1.5rem;
 }
 
-/* Estilo individual de cada tarjeta */
+/* ---------------------------- 
+   Estilos para las tarjetas 
+   ---------------------------- */
 .stat-card-r {
     background: var(--color-light);
     border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    padding: 1rem;
-    height: 100%;
-    flex: 1;
-    min-width: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-
+    flex-direction: column;
+    align-items: flex-start;
+    height: 90px; /* Ajusta la altura de las tarjetas a un valor más pequeño */
 }
 
-/* Estilos para el contenido de las tarjetas */
+/* Estilo específico para la tarjeta de hashtags */
+.stat-card-hashtags {
+    flex: 0 0 30%;
+    padding-right: 0.5rem;
+}
+
+/* Estilo específico para la tarjeta de tipos de clientes */
+.stat-card-graph {
+    flex: 0 0 70%;
+}
+
+/* ---------------------------- 
+   Estilos para el contenido de las tarjetas 
+   ---------------------------- */
 .stat-card .stat-value {
     font-size: 1rem;
     font-weight: 600;
@@ -66,14 +81,18 @@
     line-height: 1;
 }
 
-/* Contenedor de información dentro de la tarjeta */
+/* ---------------------------- 
+   Contenedor de información dentro de la tarjeta 
+   ---------------------------- */
 .stat-info {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-/* Sección del ranking */
+/* ---------------------------- 
+   Sección del ranking 
+   ---------------------------- */
 .ranking-section {
     background: var(--color-light);        
     border-radius: 10px;                   
@@ -84,14 +103,15 @@
     padding: 0 1rem; /* Padding solo a los costados */
 }
 
-/* Contenedor de los gráficos */
+/* ---------------------------- 
+   Contenedor de los gráficos 
+   ---------------------------- */
 .charts-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     margin-top: 2rem;
     width: 95%;
-    
 }
 
 .chart-wrapper {
@@ -122,7 +142,9 @@
     letter-spacing: 0.02em;
 }
 
-/* Estilos de la tabla de ranking */
+/* ---------------------------- 
+   Estilos de la tabla de ranking 
+   ---------------------------- */
 .ranking-table {
     width: 100%;
     border-collapse: separate;
@@ -156,7 +178,9 @@
     border-top: 1px solid rgba(0,0,0,0.05);
 }
 
-/* Estilo para el primer lugar */
+/* ---------------------------- 
+   Estilo para el primer lugar 
+   ---------------------------- */
 .ranking-table tr:first-child {
     background: rgba(0, 169, 184, 0.1);
 }
@@ -166,7 +190,9 @@
     font-weight: 500;
 }
 
-/* Estilo para el último lugar */
+/* ---------------------------- 
+   Estilo para el último lugar 
+   ---------------------------- */
 .ranking-table tr.last-place {
     background: rgba(231, 76, 60, 0.1);
 }
@@ -176,7 +202,9 @@
     font-weight: 500;
 }
 
-/* Contenido del encabezado */
+/* ---------------------------- 
+   Contenido del encabezado 
+   ---------------------------- */
 .header-content {
     display: flex;
     align-items: center;
@@ -184,7 +212,9 @@
     white-space: nowrap;
 }
 
-/* Contenedor de botones de ordenamiento */
+/* ---------------------------- 
+   Contenedor de botones de ordenamiento 
+   ---------------------------- */
 .sort-buttons {
     display: flex;
     flex-direction: column;
@@ -193,7 +223,9 @@
     padding: 1px;
 }
 
-/* Botones de ordenamiento */
+/* ---------------------------- 
+   Botones de ordenamiento 
+   ---------------------------- */
 .sort-btn {
     background: transparent;
     border: none;
@@ -221,7 +253,9 @@
     color: var(--color-secondary);
 }
 
-/* Ajustar anchos de columnas */
+/* ---------------------------- 
+   Ajustar anchos de columnas 
+   ---------------------------- */
 .ranking-table th:first-child {
     width: 60%;
     text-align: left;
@@ -232,7 +266,9 @@
     width: 20%;
 }
 
-/* Alineación de celdas */
+/* ---------------------------- 
+   Alineación de celdas 
+   ---------------------------- */
 .ranking-table td,
 .ranking-table th {
     padding: 0.75rem 0.5rem;
@@ -244,7 +280,9 @@
     text-align: center;
 }
 
-/* Estilos para los badges de sentimiento */
+/* ---------------------------- 
+   Estilos para los badges de sentimiento 
+   ---------------------------- */
 .sentiment-badge {
     padding: 0.25rem 0.5rem;             
     border-radius: 12px;                  
@@ -262,7 +300,9 @@
     color: #e74c3c;
 }
 
-/* Estilos para el encabezado del ranking */
+/* ---------------------------- 
+   Estilos para el encabezado del ranking 
+   ---------------------------- */
 .ranking-header {
     display: flex;
     justify-content: space-between;
@@ -282,6 +322,9 @@
     gap: 0.5rem;
 }
 
+/* ---------------------------- 
+   Estilos para los botones de filtro 
+   ---------------------------- */
 .filter-btn {
     background: var(--color-light);
     border: 1px solid var(--color-primary);
@@ -309,7 +352,9 @@
     font-size: 0.75rem;
 }
 
-/* Estilos para columnas ordenables */
+/* ---------------------------- 
+   Estilos para columnas ordenables 
+   ---------------------------- */
 .ranking-table th.sortable {
     position: relative;
     padding-left: 25px;
@@ -320,7 +365,9 @@
     font-size: 0.9rem;
 }
 
-/* Asegurar que todas las columnas tengan el mismo ancho */
+/* ---------------------------- 
+   Asegurar que todas las columnas tengan el mismo ancho 
+   ---------------------------- */
 .ranking-table th:first-child,
 .ranking-table td:first-child {
     width: 40%;  /* Columna de nombre */
@@ -341,13 +388,17 @@
     width: 25%;  /* Columna de sentimiento */
 }
 
-/* Separador entre top 2 y último */
+/* ---------------------------- 
+   Separador entre top 2 y último 
+   ---------------------------- */
 .ranking-table tr.separator-row td {
     padding: 0.5rem 0;
     border: none;
 }
 
-/* Asegurar que la tabla tenga un layout horizontal correcto */
+/* ---------------------------- 
+   Asegurar que la tabla tenga un layout horizontal correcto 
+   ---------------------------- */
 .ranking-table thead tr {
     display: table-row;
 }
@@ -357,7 +408,9 @@
     vertical-align: middle;
 }
 
-/* Gráfico de sentimiento */
+/* ---------------------------- 
+   Gráfico de sentimiento 
+   ---------------------------- */
 .sentiment-chart {
     background: var(--color-light);
     border-radius: 10px;
@@ -370,7 +423,9 @@
     justify-content: center;
 }
 
-/* Asegurarse de que el canvas respete el contenedor */
+/* ---------------------------- 
+   Asegurarse de que el canvas respete el contenedor 
+   ---------------------------- */
 .sentiment-chart canvas {
     max-height: 100%;
     width: 100% !important;
@@ -383,7 +438,9 @@
     font-family: var(--font-main);
 }
 
-/* Contenedor para la fila del medio */
+/* ---------------------------- 
+   Contenedor para la fila del medio 
+   ---------------------------- */
 .middle-row-container {
     display: grid;
     grid-template-columns: 1fr 1fr;  /* Divide en dos columnas iguales */
@@ -393,6 +450,9 @@
     padding: 0;
 }
 
+/* ---------------------------- 
+   Estilo de las tarjetas de estadísticas 
+   ---------------------------- */
 .stats-card {
     background: var(--color-light);
     border-radius: 10px;
@@ -422,7 +482,9 @@
     justify-content: center;
 }
 
-/* Estilos para los hashtags */
+/* ---------------------------- 
+   Estilos para los hashtags 
+   ---------------------------- */
 .hashtags-container {
     width: 100%;
     margin-top: -1rem;
@@ -449,6 +511,7 @@
     padding: 0 0.3rem;
     font-family: var(--font-main);
 }
+
 
 .hashtag-item {
     display: flex;
@@ -491,14 +554,18 @@
     font-style: italic;
 }
 
-/* Estilos para el gráfico de encuestas por día */
+/* ---------------------------- 
+   Estilos para el gráfico de encuestas por día 
+   ---------------------------- */
 #encuestasPorDiaGraph {
     width: 100%; 
     height: 210px; /* Ajusta la altura a un valor más pequeño */
     margin-top: 0; 
 }
 
-/* Estilos para el texto del gráfico */
+/* ---------------------------- 
+   Estilos para el texto del gráfico 
+   ---------------------------- */
 .chart-wrapper h3 {
     color: var(--color-primary); /* Color del título */
     font-size: 0.85rem; /* Tamaño de fuente del título */
@@ -508,15 +575,19 @@
     font-weight: 600; /* Peso de la fuente */
 }
 
-/* Estilos para el texto dentro del gráfico */
+/* ---------------------------- 
+   Estilos para el texto dentro del gráfico 
+   ---------------------------- */
 .sentiment-chart text {
     font-family: var(--font-main); /* Tipografía */
     font-size: 12px; /* Tamaño de fuente */
     color: var(--color-text); /* Color del texto */
 }
 
-/* Estilos para el título de los gráficos */
-.chart-title {
+/* ---------------------------- 
+   Estilos para el título de los gráficos 
+   ---------------------------- */
+   .chart-title {
     color: var(--color-primary); /* Color del título */
     font-size: 0.85rem; /* Tamaño de fuente del título */
     margin-bottom: 0.3rem; /* Espaciado inferior */

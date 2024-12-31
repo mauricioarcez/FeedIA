@@ -201,6 +201,7 @@ def reportes(request):
         'top_hashtags': service.get_top_hashtags(),
         'encuestas_por_dia': service.get_encuestas_por_dia(negocio),
         'encuestas_por_dia_graph': service.get_encuestas_por_dia_graph(negocio),
+        'tipos_clientes_graph': service.get_tipos_clientes_graph(),  
     }
     
     return render(request, 'encuestas/reportes.html', context)

@@ -22,14 +22,8 @@
                 </div>
             </div>
         </div>
-        <div class="stat-card-r">
-            <!-- Contenido de la     tarjeta 2 -->
-        </div>
-        <div class="stat-card-r">
-            <!-- Contenido de la tarjeta 3 -->
-        </div>
-        <div class="stat-card-r">
-            <!-- Contenido de la tarjeta 4 -->
+        <div class="stat-card-r stat-card-graph">
+            <div id="tiposClientesGraph"></div>
         </div>
     </div>
 
@@ -122,6 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Datos para el gráfico de encuestas por día
     const encuestasData = JSON.parse('{{ encuestas_por_dia_graph|escapejs }}');
     Plotly.newPlot('encuestasPorDiaGraph', encuestasData.data, encuestasData.layout);
+
+    const tiposClientesData = JSON.parse('{{ tipos_clientes_graph|escapejs }}');
+    Plotly.newPlot('tiposClientesGraph', tiposClientesData.data, tiposClientesData.layout);
 });
 </script>
 {% endblock %}
