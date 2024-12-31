@@ -1,6 +1,6 @@
 from django.core.cache import cache
 from django.db.models import Avg, Count, Q, Case, When, FloatField
-from django.db.models.functions import Coalesce
+from django.db.models.functions import Coalesce, TruncDate
 from typing import Dict, List
 import plotly.graph_objects as go
 import plotly.utils
@@ -388,24 +388,36 @@ class ReportesService:
     def get_encuestas_por_dia(self, negocio) -> Dict[int, int]:
         """Obtiene la cantidad de encuestas por día del mes actual."""
         today = timezone.now().date()
-        start_date = today.replace(day=1)
-        end_date = today.replace(day=31)
+        start_date = timezone.make_aware(timezone.datetime(today.year, today.month, 1))  # Primer día del mes actual
+        end_date = timezone.make_aware(timezone.datetime(today.year, today.month, 1) + timedelta(days=31)).replace(day=1) - timedelta(days=1)  # Último día del mes actual
 
+        print(f"Rango de fechas: {start_date} a {end_date}")  # Imprimir el rango de fechas
+
+        # Realizar la consulta sin TruncDate
         encuestas_por_dia = (
             Encuesta.objects.filter(
-                negocio=negocio,  # Usa el negocio pasado como argumento
-                fecha_respuesta__date=today
+                negocio_id=negocio.id,
+                fecha_respuesta__range=[start_date, end_date]
             )
-            .values('fecha_respuesta__date')
-            .annotate(total=Count('id'))
-            .order_by('fecha_respuesta__date')
+            .values('fecha_respuesta')  # Agrupar por la fecha original
+            .annotate(total=Count('id'))  # Contar las encuestas
+            .order_by('fecha_respuesta')  # Ordenar por fecha
         )
+
+        # Imprimir el resultado de la consulta
+        print(f"Resultados de la consulta: {list(encuestas_por_dia)}")  # Imprimir las encuestas por día
 
         # Crear un diccionario con días del mes y sus totales
         result = {day: 0 for day in range(1, 32)}
         for entry in encuestas_por_dia:
-            result[entry['fecha_respuesta__day']] = entry['total']
+            print(f"Entry: {entry}")  # Imprimir cada entrada
+            if entry['fecha_respuesta'] is not None:  # Verificar que no sea None
+                day = entry['fecha_respuesta'].day  # Acceder al atributo 'day'
+                result[day] += entry['total']  # Sumar el total para ese día
+            else:
+                print("Fecha es None, no se puede procesar esta entrada.")  # Mensaje de advertencia
 
+        print(f"Resultados por día: {result}")  # Imprimir el resultado antes de devolverlo
         return result
 
     def get_encuestas_por_dia_graph(self, negocio) -> str:
@@ -419,8 +431,11 @@ class ReportesService:
             x=dias,
             y=cantidades,
             mode='lines+markers',
-            marker=dict(color='blue')
+            marker=dict(color='#1D3C59')  # Cambiado a color solicitado
         )
+
+        max_cantidad = max(cantidades) if cantidades else 0
+        mitad_max = max_cantidad / 2
 
         layout = go.Layout(
             margin=dict(t=20, b=20, l=40, r=40),  # Ajusta los márgenes generales
@@ -437,7 +452,8 @@ class ReportesService:
                     size=10,           # Tamaño de la fuente de los ticks
                     color='var(--color-text)'  # Color de los ticks
                 ),
-                title_standoff=5  # Reduce el espacio entre el título y el eje
+                title_standoff=5,  # Reduce el espacio entre el título y el eje
+                gridcolor='#F5F5F5'  # Cambiar el color del gridline
             ),
             yaxis=dict(
                 title='Cantidad de Encuestas',
@@ -446,18 +462,16 @@ class ReportesService:
                     size=10,           # Tamaño del título del eje Y
                     color='var(--color-text)'  # Color del título
                 ),
-                tickmode='linear',
-                tick0=0,
-                dtick=1,
-                range=[0, max(cantidades) + 1],  # Mostrar solo el número más alto
+                tickmode='array',
+                tickvals=[0, mitad_max, max_cantidad + 1],  # Mostrar 0, mitad del máximo y máximo + 1
                 tickfont=dict(
                     family='Poppins',  # Tipografía para los ticks
                     size=10,           # Tamaño de la fuente de los ticks
-                    color='var(--color-text)'  # Color de los ticks
                 ),
-                title_standoff=5  # Reduce el espacio entre el título y el eje
+                title_standoff=5,  # Reduce el espacio entre el título y el eje
+                gridcolor='#F5F5F5'  # Cambiar el color del gridline
             ),
-            height=200  # Ajusta la altura del gráfico aquí también
+            height=215  # Ajusta la altura del gráfico aquí también
         )
 
         fig = go.Figure(data=[trace], layout=layout)

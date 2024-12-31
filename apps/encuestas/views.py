@@ -35,7 +35,6 @@ def crear_encuesta(request):
                 fecha_respuesta=timezone.now(),
                 fecha_expiracion=timezone.now() + timedelta(hours=24)
             )
-            print(f"Empleado asignado: {empleado}")  # En crear_encuesta
             encuesta.generar_codigo_temporal()
             messages.success(request, f'Encuesta creada exitosamente. Código: {encuesta.codigo_temporal}')
             
@@ -68,7 +67,7 @@ def completar_encuesta(request, codigo):
                 encuesta_respuesta.atencion_servicio = form.cleaned_data['atencion_servicio']
                 encuesta_respuesta.usuario = request.user
                 encuesta_respuesta.empleado = encuesta.empleado
-                print(f"Empleado en completar: {encuesta.empleado}") 
+                
 
                 # Aquí deberías llamar al análisis de sentimiento
                 sentiment_analyzer = SentimentAnalyzer()
@@ -77,8 +76,6 @@ def completar_encuesta(request, codigo):
                 # Verifica el resultado del análisis de sentimiento
                 if resultado_sentimiento:
                     encuesta_respuesta.sentimiento = resultado_sentimiento[0]['label']  # Guarda la etiqueta de sentimiento
-                else:
-                    print("No se obtuvo resultado de sentimiento.")
                 
                 encuesta_respuesta.encuesta_completada = True
                 encuesta_respuesta.save()
