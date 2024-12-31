@@ -23,6 +23,16 @@ class EncuestaForm(forms.ModelForm):
         })
     )
     
+    tipo_cliente = forms.ChoiceField(
+        choices=[
+            ('nuevo', 'Nuevo'),
+            ('recurrente', 'Recurrente'),
+            ('ocasional', 'Ocasional'),
+        ],
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    
     atencion_servicio = forms.IntegerField(
         min_value=1,
         max_value=5,
@@ -38,11 +48,13 @@ class EncuestaForm(forms.ModelForm):
         model = Encuesta
         fields = [
             'tipo_cliente',
+            'respuesta_anonima',
             'experiencia_general',
             'atencion_servicio',
             'recomendaciones',
+            'empleado',
             'hashtag',
-            'respuesta_anonima'
+            'sentimiento'
         ]
         widgets = {
             'tipo_cliente': forms.Select(attrs={'class': 'form-control'}),

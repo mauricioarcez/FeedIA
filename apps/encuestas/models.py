@@ -64,7 +64,7 @@ class Encuesta(models.Model):
     tipo_cliente = models.CharField(
         max_length=20,
         choices=TIPO_CLIENTE_CHOICES,
-        null=True,
+        null=False,
         blank=True
     )
     respuesta_anonima = models.BooleanField(default=False)

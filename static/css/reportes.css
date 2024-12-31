@@ -31,7 +31,7 @@
     gap: 0.5rem;
     width: 100%;
     height: 70px;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 /* Estilo individual de cada tarjeta */
@@ -39,13 +39,14 @@
     background: var(--color-light);
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    padding: 0.5rem;
+    padding: 1rem;
     height: 100%;
     flex: 1;
     min-width: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
+
 }
 
 /* Estilos para el contenido de las tarjetas */
@@ -80,7 +81,7 @@
     height: 100%;                          
     width: 100%;                           
     overflow-y: auto;
-    padding: 1rem;
+    padding: 0 1rem; /* Padding solo a los costados */
 }
 
 /* Contenedor de los gráficos */
@@ -88,9 +89,9 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    margin-top: 1rem;
-    width: 100%;
-    padding: 0.5rem 1rem;
+    margin-top: 2rem;
+    width: 95%;
+    
 }
 
 .chart-wrapper {
@@ -98,7 +99,7 @@
     padding: 0.75rem;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    width: 95%;
+    width: 100%;
     height: 180px;
     font-family: var(--font-main);
     margin: 0 auto;
@@ -389,24 +390,29 @@
     gap: 1rem;
     width: 100%;
     height: 35vh;
+    padding: 0;
 }
 
-/* Estilos para la nueva tarjeta */
 .stats-card {
     background: var(--color-light);
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    height: 100%;
-    width: 100%;
-    padding: 1rem;
+    min-height: 260px; /* Establece una altura mínima para el card */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra el contenido verticalmente */
+    width: 95%; /* Ancho un poco más pequeño */
+    margin-left: 1.5rem; /* Agrega un poco de margen izquierdo */
 }
 
 .stats-card h3 {
-    color: var(--color-primary);
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    font-family: var(--font-main);
-    font-weight: 500;
+    color: var(--color-primary); /* Color del título */
+    font-size: 0.85rem; /* Tamaño de fuente del título */
+    margin-bottom: 0.3rem; /* Espaciado inferior */
+    text-align: left; /* Alineación del texto */
+    font-family: var(--font-main); /* Tipografía */
+    font-weight: 600; /* Peso de la fuente */
+    margin-left: 1.5rem;
 }
 
 .stats-content {
@@ -429,7 +435,7 @@
     font-weight: 600;
     border-radius: 6px;
     margin-bottom: 0.1rem;
-    position: sticky;
+    
     top: 0;
     z-index: 10;
     font-family: var(--font-main);
@@ -483,4 +489,38 @@
     opacity: 0.6;
     font-size: 0.75rem;
     font-style: italic;
+}
+
+/* Estilos para el gráfico de encuestas por día */
+#encuestasPorDiaGraph {
+    width: 100%; 
+    height: 210px; /* Ajusta la altura a un valor más pequeño */
+    margin-top: 0; 
+}
+
+/* Estilos para el texto del gráfico */
+.chart-wrapper h3 {
+    color: var(--color-primary); /* Color del título */
+    font-size: 0.85rem; /* Tamaño de fuente del título */
+    margin-bottom: 0.3rem; /* Espaciado inferior */
+    text-align: left; /* Alineación del texto */
+    font-family: var(--font-main); /* Tipografía */
+    font-weight: 600; /* Peso de la fuente */
+}
+
+/* Estilos para el texto dentro del gráfico */
+.sentiment-chart text {
+    font-family: var(--font-main); /* Tipografía */
+    font-size: 12px; /* Tamaño de fuente */
+    color: var(--color-text); /* Color del texto */
+}
+
+/* Estilos para el título de los gráficos */
+.chart-title {
+    color: var(--color-primary); /* Color del título */
+    font-size: 0.85rem; /* Tamaño de fuente del título */
+    margin-bottom: 0.3rem; /* Espaciado inferior */
+    text-align: left; /* Alineación del texto */
+    font-family: 'Poppins', sans-serif; /* Tipografía */
+    font-weight: 600; /* Peso de la fuente */
 }

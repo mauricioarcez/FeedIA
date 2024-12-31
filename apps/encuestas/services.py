@@ -7,7 +7,7 @@ import plotly.utils
 import json
 from apps.encuestas.models import Encuesta, Empleado
 from django.utils import timezone
-from datetime import date, timedelta
+from datetime import timedelta
 
 # --------------------------------------------------------------------------------------------
 class ReportesService:
@@ -149,9 +149,7 @@ class ReportesService:
                 showgrid=False
             ),
             xaxis=dict(
-                tickmode='linear',
-                tick0=0,
-                dtick=1,
+                showticklabels=False,
                 showgrid=False
             )
         )
@@ -256,9 +254,7 @@ class ReportesService:
                 showgrid=False
             ),
             xaxis=dict(
-                tickmode='linear',
-                tick0=0,
-                dtick=1,
+                showticklabels=False,
                 showgrid=False
             )
         )
@@ -326,7 +322,7 @@ class ReportesService:
         
         fig = go.Figure(data=[
             go.Bar(
-                y=['< 18', '19-25', '26-35', '36-50', '> 60'],
+                y=categorias,
                 x=valores,
                 marker_color=[
                     self.COLORS['accent1'],
@@ -361,9 +357,7 @@ class ReportesService:
                 showgrid=False
             ),
             xaxis=dict(
-                tickmode='linear',
-                tick0=0,
-                dtick=1,
+                showticklabels=False,  # Ocultar etiquetas del eje x
                 showgrid=False
             )
         )
@@ -390,3 +384,81 @@ class ReportesService:
             cache.set(cache_key, result, self.CACHE_TTL)
         
         return result
+
+    def get_encuestas_por_dia(self, negocio) -> Dict[int, int]:
+        """Obtiene la cantidad de encuestas por día del mes actual."""
+        today = timezone.now().date()
+        start_date = today.replace(day=1)
+        end_date = today.replace(day=31)
+
+        encuestas_por_dia = (
+            Encuesta.objects.filter(
+                negocio=negocio,  # Usa el negocio pasado como argumento
+                fecha_respuesta__date=today
+            )
+            .values('fecha_respuesta__date')
+            .annotate(total=Count('id'))
+            .order_by('fecha_respuesta__date')
+        )
+
+        # Crear un diccionario con días del mes y sus totales
+        result = {day: 0 for day in range(1, 32)}
+        for entry in encuestas_por_dia:
+            result[entry['fecha_respuesta__day']] = entry['total']
+
+        return result
+
+    def get_encuestas_por_dia_graph(self, negocio) -> str:
+        """Genera el gráfico de encuestas por día sin tarjeta de fondo."""
+        encuestas_por_dia = self.get_encuestas_por_dia(negocio)  # Pasa el negocio aquí
+        dias = list(encuestas_por_dia.keys())
+        cantidades = list(encuestas_por_dia.values())
+
+        # Crear el gráfico de líneas
+        trace = go.Scatter(
+            x=dias,
+            y=cantidades,
+            mode='lines+markers',
+            marker=dict(color='blue')
+        )
+
+        layout = go.Layout(
+            margin=dict(t=20, b=20, l=40, r=40),  # Ajusta los márgenes generales
+            xaxis=dict(
+                title='Día del Mes',
+                titlefont=dict(
+                    family='Poppins',  # Tipografía
+                    size=10,           # Tamaño del título del eje X
+                    color='var(--color-text)'  # Color del título
+                ),
+                tickvals=[1, 8, 15, 22, 31],  # Mostrar solo 4 números
+                tickfont=dict(
+                    family='Poppins',  # Tipografía para los ticks
+                    size=10,           # Tamaño de la fuente de los ticks
+                    color='var(--color-text)'  # Color de los ticks
+                ),
+                title_standoff=5  # Reduce el espacio entre el título y el eje
+            ),
+            yaxis=dict(
+                title='Cantidad de Encuestas',
+                titlefont=dict(
+                    family='Poppins',  # Tipografía
+                    size=10,           # Tamaño del título del eje Y
+                    color='var(--color-text)'  # Color del título
+                ),
+                tickmode='linear',
+                tick0=0,
+                dtick=1,
+                range=[0, max(cantidades) + 1],  # Mostrar solo el número más alto
+                tickfont=dict(
+                    family='Poppins',  # Tipografía para los ticks
+                    size=10,           # Tamaño de la fuente de los ticks
+                    color='var(--color-text)'  # Color de los ticks
+                ),
+                title_standoff=5  # Reduce el espacio entre el título y el eje
+            ),
+            height=200  # Ajusta la altura del gráfico aquí también
+        )
+
+        fig = go.Figure(data=[trace], layout=layout)
+        return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)

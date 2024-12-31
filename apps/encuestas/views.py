@@ -9,6 +9,7 @@ from .forms import EncuestaForm, EmpleadoForm
 from datetime import timedelta
 from .services import ReportesService
 from .ai import SentimentAnalyzer
+from apps.encuestas.ai.sentiment_analyzer import SentimentAnalyzer
 import logging
 
 logger = logging.getLogger(__name__)
@@ -34,9 +35,10 @@ def crear_encuesta(request):
                 fecha_respuesta=timezone.now(),
                 fecha_expiracion=timezone.now() + timedelta(hours=24)
             )
-            
+            print(f"Empleado asignado: {empleado}")  # En crear_encuesta
             encuesta.generar_codigo_temporal()
             messages.success(request, f'Encuesta creada exitosamente. Código: {encuesta.codigo_temporal}')
+            
             return redirect('encuestas:ver_encuestas')
             
         except Exception as e:
@@ -55,36 +57,43 @@ def crear_encuesta(request):
 def completar_encuesta(request, codigo):
     """Vista para completar la encuesta a partir de un código temporal"""
     try:
-        encuesta = Encuesta.objects.get(codigo_temporal=codigo)
-        
+        encuesta = Encuesta.objects.select_related('empleado').get(codigo_temporal=codigo)
+        print(f"Encuesta recuperada: {encuesta}")  # Esto mostrará todos los campos de la encuesta
         if request.method == 'POST':
             form = EncuestaForm(request.POST, instance=encuesta)
             if form.is_valid():
-                print("Datos del formulario:", form.cleaned_data)  # Debug
                 encuesta_respuesta = form.save(commit=False)
                 
-                # Asignar explícitamente los valores
                 encuesta_respuesta.experiencia_general = form.cleaned_data['experiencia_general']
                 encuesta_respuesta.atencion_servicio = form.cleaned_data['atencion_servicio']
                 encuesta_respuesta.usuario = request.user
+                encuesta_respuesta.empleado = encuesta.empleado
+                print(f"Empleado en completar: {encuesta.empleado}") 
+
+                # Aquí deberías llamar al análisis de sentimiento
+                sentiment_analyzer = SentimentAnalyzer()
+                resultado_sentimiento = sentiment_analyzer.analyze_with_cache([encuesta_respuesta.recomendaciones])
+                
+                # Verifica el resultado del análisis de sentimiento
+                if resultado_sentimiento:
+                    encuesta_respuesta.sentimiento = resultado_sentimiento[0]['label']  # Guarda la etiqueta de sentimiento
+                else:
+                    print("No se obtuvo resultado de sentimiento.")
+                
                 encuesta_respuesta.encuesta_completada = True
-                
-                # Debug
-                print(f"Experiencia general: {encuesta_respuesta.experiencia_general}")
-                print(f"Atención servicio: {encuesta_respuesta.atencion_servicio}")
-                
                 encuesta_respuesta.save()
                 encuesta_respuesta.marcar_codigo_como_usado()
                 
                 # Sumar puntos al usuario
                 request.user.puntos += 2
                 request.user.save()
-                
+
                 messages.success(request, '¡Gracias por completar la encuesta! Se te han sumado 2 puntos.')
                 return redirect('usuarios:home_common')
         else:
             form = EncuestaForm(instance=encuesta)
-        
+            print(form.errors)
+
         return render(request, 'encuestas/completar_encuesta.html', {
             'form': form, 
             'encuesta': encuesta
@@ -92,7 +101,7 @@ def completar_encuesta(request, codigo):
     except Encuesta.DoesNotExist:
         messages.error(request, 'Código de encuesta no válido o expirado.')
         return redirect('usuarios:home_common')
-
+                
 # ------------------------------------------------------------------------------------------------
 
 @login_required
@@ -129,7 +138,7 @@ def ingresar_codigo(request):
                 negocio_id=negocio_id,
                 encuesta_completada=False
             )
-            return redirect('encuestas:completar_encuesta', codigo=codigo)
+            return redirect('encuestas:completar_encuesta', codigo=encuesta.codigo_temporal)
         except Encuesta.DoesNotExist:
             messages.error(request, 'Código no válido para el negocio seleccionado.')
             return redirect('encuestas:ingresar_codigo')
@@ -182,6 +191,7 @@ def reportes(request):
         return redirect('home')
     
     service = ReportesService(request.user.id)
+    negocio = request.user
     orden = request.GET.get('orden', 'calificacion_desc')
     
     context = {
@@ -192,6 +202,8 @@ def reportes(request):
         'generos_graph': service.get_generos_graph(),
         'edades_graph': service.get_edades_graph(),
         'top_hashtags': service.get_top_hashtags(),
+        'encuestas_por_dia': service.get_encuestas_por_dia(negocio),
+        'encuestas_por_dia_graph': service.get_encuestas_por_dia_graph(negocio),
     }
     
     return render(request, 'encuestas/reportes.html', context)

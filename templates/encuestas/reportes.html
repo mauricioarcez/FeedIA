@@ -81,10 +81,9 @@
         </div>
         
         <div class="stats-card">
-            <!-- Aquí irá el contenido de la nueva tarjeta -->
-            <h3>Estadísticas Adicionales</h3>
+            <h3 class="chart-title">Encuestas Por Día</h3>
             <div class="stats-content">
-                <!-- Contenido futuro -->
+                <div id="encuestasPorDiaGraph"></div>
             </div>
         </div>
     </div>
@@ -119,6 +118,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const edadesData = JSON.parse('{{ edades_graph|escapejs }}');
     Plotly.newPlot('edadesGraph', edadesData.data, edadesData.layout);
+
+    // Datos para el gráfico de encuestas por día
+    const encuestasData = JSON.parse('{{ encuestas_por_dia_graph|escapejs }}');
+    Plotly.newPlot('encuestasPorDiaGraph', encuestasData.data, encuestasData.layout);
 });
 </script>
 {% endblock %}
