@@ -8,6 +8,7 @@ import json
 from apps.encuestas.models import Encuesta, Empleado
 from django.utils import timezone
 from datetime import timedelta
+import calendar  # Asegúrate de importar el módulo calendar
 
 # --------------------------------------------------------------------------------------------
 class ReportesService:
@@ -116,8 +117,8 @@ class ReportesService:
             go.Bar(
                 y=['Positivas', 'Neutrales', 'Negativas'],
                 x=[sentimientos['POS'], sentimientos['NEU'], sentimientos['NEG']],
-                marker_color=[self.COLORS['secondary'], 
-                            self.COLORS['neutral'], 
+                marker_color=[self.COLORS['primary'], 
+                            self.COLORS['secondary'], 
                             self.COLORS['accent3']],
                 orientation='h',
                 text=[sentimientos['POS'], sentimientos['NEU'], sentimientos['NEG']],
@@ -381,6 +382,7 @@ class ReportesService:
         
         return result
 
+
     def get_encuestas_por_dia(self, negocio) -> Dict[int, int]:
         """Obtiene la cantidad de encuestas por día del mes actual."""
         today = timezone.now().date()
@@ -406,11 +408,34 @@ class ReportesService:
                 result[day] += entry['total']  # Sumar el total para ese día
         return result
 
+
     def get_encuestas_por_dia_graph(self, negocio) -> str:
         """Genera el gráfico de encuestas por día sin tarjeta de fondo."""
         encuestas_por_dia = self.get_encuestas_por_dia(negocio)  # Pasa el negocio aquí
         dias = list(encuestas_por_dia.keys())
         cantidades = list(encuestas_por_dia.values())
+
+        # Obtener el mes actual en español
+        today = timezone.now().date()
+        month_number = today.month
+
+        # Diccionario para los nombres de los meses en español
+        meses_espanol = {
+            1: "Enero",
+            2: "Febrero",
+            3: "Marzo",
+            4: "Abril",
+            5: "Mayo",
+            6: "Junio",
+            7: "Julio",
+            8: "Agosto",
+            9: "Septiembre",
+            10: "Octubre",
+            11: "Noviembre",
+            12: "Diciembre"
+        }
+
+        month_name_es = meses_espanol[month_number]  # Obtener el nombre del mes en español
 
         # Crear el gráfico de líneas
         trace = go.Scatter(
@@ -424,7 +449,8 @@ class ReportesService:
         mitad_max = max_cantidad / 2
 
         layout = go.Layout(
-            margin=dict(t=20, b=20, l=40, r=40),  # Ajusta los márgenes generales
+            title=f'<span style="font-family: Poppins; font-weight: 600; font-size: 0.8rem;">Encuestas por Día - {month_name_es}</span>',  # Título con el mes actual en español
+            margin=dict(t=30, b=10, l=40, r=40),  # Ajusta los márgenes generales
             xaxis=dict(
                 title='Día del Mes',
                 titlefont=dict(
@@ -457,14 +483,15 @@ class ReportesService:
                 title_standoff=5,  # Reduce el espacio entre el título y el eje
                 gridcolor='#F5F5F5'  # Cambiar el color del gridline
             ),
-            height=215  # Ajusta la altura del gráfico aquí también
+            height=225,  # Ajusta la altura del gráfico aquí también
         )
 
         fig = go.Figure(data=[trace], layout=layout)
         return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
+
     def get_tipos_clientes_graph(self) -> str:
-        """Genera un gráfico de barras apiladas horizontales que muestra el porcentaje de todos los tipos de clientes."""
+        """Genera un gráfico de barras apiladas horizontales que muestra el porcentaje y la cantidad total de todos los tipos de clientes."""
         # Obtener los conteos de tipos de clientes
         nuevos = Encuesta.objects.filter(empleado__negocio_id=self.negocio_id, tipo_cliente='nuevo').count()
         recurrentes = Encuesta.objects.filter(empleado__negocio_id=self.negocio_id, tipo_cliente='recurrente').count()
@@ -484,8 +511,8 @@ class ReportesService:
             y=['Clientes'],  # Solo una barra para todos los tipos
             name='Nuevos',
             orientation='h',  # Cambiar a orientación horizontal
-            marker=dict(color=self.COLORS['accent1']),
-            text=f"{porcentajes[0]:.1f}%",
+            marker=dict(color=self.COLORS['primary']),
+            text=f"{porcentajes[0]:.1f}% ({nuevos})",  # Mostrar porcentaje y cantidad
             textposition='inside',
             insidetextanchor='middle',
             textfont=dict(color='white', size=12),
@@ -496,8 +523,8 @@ class ReportesService:
             y=['Clientes'],  # Solo una barra para todos los tipos
             name='Recurrentes',
             orientation='h',  # Cambiar a orientación horizontal
-            marker=dict(color=self.COLORS['accent2']),
-            text=f"{porcentajes[1]:.1f}%",
+            marker=dict(color=self.COLORS['secondary']),
+            text=f"{porcentajes[1]:.1f}% ({recurrentes})",  # Mostrar porcentaje y cantidad
             textposition='inside',
             insidetextanchor='middle',
             textfont=dict(color='white', size=12),
@@ -509,7 +536,7 @@ class ReportesService:
             name='Ocasionales',
             orientation='h',  # Cambiar a orientación horizontal
             marker=dict(color=self.COLORS['accent3']),
-            text=f"{porcentajes[2]:.1f}%",
+            text=f"{porcentajes[2]:.1f}% ({ocasionales})",  # Mostrar porcentaje y cantidad
             textposition='inside',
             insidetextanchor='middle',
             textfont=dict(color='white', size=12),
@@ -517,26 +544,22 @@ class ReportesService:
 
         # Configurar el layout del gráfico
         fig.update_layout(
-            title='Tipos de Clientes',
-            titlefont=dict(size=14, color=self.COLORS['primary']),
             barmode='stack',  # Establecer el modo de apilamiento
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
             font_family="Poppins",
-            height=150,
-            margin=dict(l=20, r=20, t=20, b=20),  # Asegurando que el margen esté presente
+            height=80,
+            margin=dict(l=10, r=10, t=10, b=10),  # Asegurando que el margen esté presente
             xaxis=dict(
-                title='Porcentaje',
-                titlefont=dict(size=12, color=self.COLORS['primary']),
-                tickfont=dict(size=10),
+                tickfont=dict(size=8),
                 showgrid=False,
-                range=[0, 100]
+                range=[0, 100],
             ),
             yaxis=dict(
-                title='Clientes',
-                titlefont=dict(size=12, color=self.COLORS['primary']),
-                tickfont=dict(size=10),
-                showgrid=False
+                titlefont=dict(size=10, color=self.COLORS['primary']),
+                tickfont=dict(size=8),
+                showgrid=False,
+                title_standoff=15  # Agregar padding entre el título y el gráfico
             )
         )
 
