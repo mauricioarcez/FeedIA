@@ -20,6 +20,12 @@
         </div>
         {% endif %}
 
+        {% if form.non_field_errors %}
+            <div class="field-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
         <form method="POST">
             {% csrf_token %}
             
@@ -27,55 +33,81 @@
                 <div class="form-group">
                     <label for="{{ form.first_name.id_for_label }}">Nombre</label>
                     {{ form.first_name }}
-                    {{ form.first_name.errors }}
+                    {% if form.first_name.errors %}
+                        <div class="field-error">
+                            {{ form.first_name.errors.0 }}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="form-group">
                     <label for="{{ form.last_name.id_for_label }}">Apellido</label>
                     {{ form.last_name }}
-                    {{ form.last_name.errors }}
+                    {% if form.last_name.errors %}
+                        <div class="field-error">
+                            {{ form.last_name.errors.0 }}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="{{ form.username.id_for_label }}">Nombre de usuario</label>
                 {{ form.username }}
-                {{ form.username.errors }}
-                {% if form.username.help_text %}
-                <span class="helptext">{{ form.username.help_text }}</span>
+                {% if form.username.errors %}
+                    <div class="field-error">
+                        {{ form.username.errors.0 }}
+                    </div>
                 {% endif %}
             </div>
 
             <div class="form-group">
                 <label for="{{ form.correo.id_for_label }}">Correo electrónico</label>
                 {{ form.correo }}
-                {{ form.correo.errors }}
+                {% if form.correo.errors %}
+                    <div class="field-error">
+                        {{ form.correo.errors.0 }}
+                    </div>
+                {% endif %}
             </div>
 
             <div class="form-group">
                 <label for="{{ form.nombre_negocio.id_for_label }}">Nombre del negocio</label>
                 {{ form.nombre_negocio }}
-                {{ form.nombre_negocio.errors }}
+                {% if form.nombre_negocio.errors %}
+                    <div class="field-error">
+                        {{ form.nombre_negocio.errors.0 }}
+                    </div>
+                {% endif %}
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="{{ form.provincia.id_for_label }}">Provincia</label>
                     {{ form.provincia }}
-                    {{ form.provincia.errors }}
+                    {% if form.provincia.errors %}
+                        <div class="field-error">
+                            {{ form.provincia.errors.0 }}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="form-group">
                     <label for="{{ form.ciudad.id_for_label }}">Ciudad</label>
                     {{ form.ciudad }}
-                    {{ form.ciudad.errors }}
+                    {% if form.ciudad.errors %}
+                        <div class="field-error">
+                            {{ form.ciudad.errors.0 }}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="{{ form.password.id_for_label }}">Contraseña</label>
                 {{ form.password }}
-                {{ form.password.errors }}
-                {% if form.password.help_text %}
-                <span class="helptext">{{ form.password.help_text }}</span>
+                {% if form.password.errors %}
+                    <div class="field-error">
+                        {{ form.password.errors.0 }}
+                    </div>
                 {% endif %}
             </div>
 

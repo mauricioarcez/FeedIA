@@ -8,51 +8,18 @@ from datetime import datetime
 class CommonUserRegistrationForm(forms.ModelForm):
     """Formulario de registro para usuarios comunes"""
     
-    password = forms.CharField(widget=forms.PasswordInput)  # Campo para la contraseña
-    genero = forms.ChoiceField(
-        choices=CustomUser.GENERO_CHOICES,
-        required=True,  # Obligatorio para usuarios comunes
-        error_messages={'required': 'Por favor selecciona tu género'}
-    )
-    
-    fecha_nacimiento = forms.DateField(
-        required=True,  # Obligatorio para usuarios comunes
-        widget=forms.DateInput(attrs={
-            'type': 'date',
-            'class': 'form-control'
-        }),
-        error_messages={'required': 'Por favor ingresa tu fecha de nacimiento'}
-    )
-    
-    correo = forms.EmailField(max_length=60)  # Campo para el correo
-    
-    # Nuevos campos para ubicación
-    ciudad = forms.CharField(
-        max_length=60,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Ej: Resistencia',
-            'class': 'form-control'
-        })
-    )
-    provincia = forms.CharField(
-        max_length=50,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Ej: Chaco',
-            'class': 'form-control'
-        })
-    )
-
     class Meta:
         model = CustomUser
-        fields = [
-            'username', 
-            'correo', 
-            'password', 
-            'genero', 
-            'fecha_nacimiento',
-            'ciudad',
-            'provincia'
-        ]
+        fields = ['username', 'correo', 'password', 'provincia', 'ciudad', 'genero', 'fecha_nacimiento']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario'}),
+            'correo': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}),
+            'provincia': forms.TextInput(attrs={'class': 'form-control'}),
+            'ciudad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ciudad'}),
+            'genero': forms.Select(attrs={'class': 'form-control'}),
+            'fecha_nacimiento': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        }
 
     def save(self, commit=True):
         """Guarda el usuario, asigna puntos y encripta la contraseña"""
@@ -63,15 +30,10 @@ class CommonUserRegistrationForm(forms.ModelForm):
 
         # Asigna el tipo de usuario
         user.user_type = 'common'  # Asigna 'common' como tipo de usuario por defecto
-        user.genero = self.cleaned_data['genero']  # Asigna el género
-        user.fecha_nacimiento = self.cleaned_data['fecha_nacimiento']  # Asigna la fecha de nacimiento
-        user.correo = self.cleaned_data['correo']  # Asigna el correo
-        user.ciudad = self.cleaned_data['ciudad'].lower().capitalize()  # Normaliza la ciudad
-        user.provincia = self.cleaned_data['provincia'].lower().capitalize()  # Normaliza la provincia
 
-        # Asigna los puntos iniciales solo si el usuario es de tipo 'common' y si no tiene puntos
-        if user.is_common_user() and user.puntos is None:
-            user.puntos = 5  # Asigna los puntos iniciales a 5 solo si aún no están asignados
+        # Normaliza la ciudad y provincia
+        user.ciudad = self.cleaned_data['ciudad'].lower().capitalize()
+        user.provincia = self.cleaned_data['provincia'].lower().capitalize()
 
         if commit:
             user.save()  # Guarda el usuario en la base de datos
@@ -80,11 +42,15 @@ class CommonUserRegistrationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        # Validaciones específicas para campos obligatorios
-        if not cleaned_data.get('genero'):
-            self.add_error('genero', 'Este campo es obligatorio')
-        if not cleaned_data.get('fecha_nacimiento'):
-            self.add_error('fecha_nacimiento', 'Este campo es obligatorio')
+        user_type = cleaned_data.get('user_type')  # Asegúrate de obtener el tipo de usuario
+
+        # Validaciones específicas para usuarios comunes
+        if user_type == 'common':
+            if not cleaned_data.get('genero'):
+                self.add_error('genero', 'Este campo es obligatorio')
+            if not cleaned_data.get('fecha_nacimiento'):
+                self.add_error('fecha_nacimiento', 'Este campo es obligatorio')
+
         return cleaned_data
 
     def clean_fecha_nacimiento(self):
@@ -105,11 +71,74 @@ class CommonUserRegistrationForm(forms.ModelForm):
 # ------------------------------------------------------------------------------------------------------
 
 class BusinessUserRegistrationForm(forms.ModelForm):
+    """Formulario de registro para usuarios de negocio"""
+    
     class Meta:
         model = CustomUser
         fields = ['username', 'correo', 'password', 'provincia', 'ciudad', 
-                 'nombre_negocio', 'first_name', 'last_name']
-        # No incluimos género ni fecha_nacimiento
+                  'nombre_negocio', 'first_name', 'last_name']
+        
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario'}),
+            'correo': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}),
+            'provincia': forms.TextInput(attrs={'class': 'form-control'}),
+            'ciudad': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ciudad'}),
+            'nombre_negocio': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del negocio'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tu nombre'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tu apellido'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Mensajes de ayuda
+        self.fields['username'].help_text = 'Elige un nombre de usuario único.'
+        self.fields['correo'].help_text = 'Introduce un correo electrónico válido.'
+        self.fields['password'].help_text = 'La contraseña debe tener al menos 8 caracteres.'
+        self.fields['provincia'].help_text = 'Selecciona tu provincia.'
+        self.fields['ciudad'].help_text = 'Introduce la ciudad donde se encuentra tu negocio.'
+        self.fields['nombre_negocio'].help_text = 'Nombre de tu negocio.'
+
+    def clean_correo(self):
+        correo = self.cleaned_data.get('correo')
+        if CustomUser.objects.filter(correo=correo).exists():
+            raise forms.ValidationError('Este correo ya está en uso. Por favor, elige otro.')
+        return correo
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # Validaciones adicionales si es necesario
+        if not cleaned_data.get('provincia'):
+            self.add_error('provincia', 'Este campo es obligatorio.')
+        if not cleaned_data.get('ciudad'):
+            self.add_error('ciudad', 'Este campo es obligatorio.')
+        if not cleaned_data.get('nombre_negocio'):
+            self.add_error('nombre_negocio', 'Este campo es obligatorio.')
+        if not cleaned_data.get('first_name'):
+            self.add_error('first_name', 'Este campo es obligatorio.')
+        if not cleaned_data.get('last_name'):
+            self.add_error('last_name', 'Este campo es obligatorio.')
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        """Guarda el usuario, asigna puntos y encripta la contraseña"""
+        user = super().save(commit=False)  # No guardamos todavía el usuario
+
+        # Encripta la contraseña
+        user.set_password(self.cleaned_data['password'])
+
+        # Asigna el tipo de usuario
+        user.user_type = 'business'  # Asigna 'business' como tipo de usuario por defecto
+
+        # Normaliza la ciudad y provincia
+        user.ciudad = self.cleaned_data['ciudad'].lower().capitalize()
+        user.provincia = self.cleaned_data['provincia'].lower().capitalize()
+
+        if commit:
+            user.save()  # Guarda el usuario en la base de datos
+
+        return user
 
 # ------------------------------------------------------------------------------------------------------
 

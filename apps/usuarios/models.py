@@ -21,7 +21,7 @@ class CustomUser(AbstractUser):
     ]
     
     # Tipo de usuario (común o negocio)
-    user_type = models.CharField(max_length=10, choices=USER_TYPES, default='common')
+    user_type = models.CharField(max_length=10, choices=USER_TYPES)
 
     # Puntos del usuario (opcional para los usuarios comunes). Comienza con 5 puntos.
     puntos = models.PositiveIntegerField(default=5, blank=True, null=True)  # Puntos pueden ser nulos, ya que es opcional para usuarios comunes
@@ -66,6 +66,8 @@ class CustomUser(AbstractUser):
                 raise ValidationError('El género es obligatorio para usuarios comunes.')
             if not self.fecha_nacimiento:
                 raise ValidationError('La fecha de nacimiento es obligatoria para usuarios comunes.')
+            
+        
 
     def is_common_user(self):
         return self.user_type == 'common'

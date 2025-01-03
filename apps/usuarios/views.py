@@ -5,6 +5,7 @@ from .forms import CommonUserRegistrationForm, BusinessUserRegistrationForm
 from django.contrib.auth import logout as auth_logout
 from apps.encuestas.models import Encuesta
 from apps.usuarios.models import CustomUser  
+from django.contrib import messages
 
 
 
@@ -67,25 +68,13 @@ def home_view(request):
 # ---------------------------------------------------------------------------------------------------------
 
 def register_business(request):
+    """Vista para registrar un nuevo negocio"""
     if request.method == 'POST':
         form = BusinessUserRegistrationForm(request.POST)
         if form.is_valid():
-            # Crear el usuario pero no guardarlo todavía
-            user = form.save(commit=False)
-            
-            # Establecer explícitamente el tipo como negocio
-            user.user_type = 'business'
-            
-            # Normalizar la provincia
-            user.provincia = form.cleaned_data['provincia'].lower().capitalize()
-            
-            # Guardar el usuario
-            user.save()
-            
-            # Iniciar sesión automáticamente
-            auth_login(request, user)
-            
-            return redirect('usuarios:home_business')
+            form.save()  # Esto encripta la contraseña y guarda el usuario
+            messages.success(request, 'Negocio registrado exitosamente.')
+            return redirect('usuarios:login')  # Redirige a la página de inicio de sesión
     else:
         form = BusinessUserRegistrationForm()
 

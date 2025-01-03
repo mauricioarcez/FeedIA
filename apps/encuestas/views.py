@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from apps.usuarios.models import CustomUser
-from .models import Encuesta, Empleado, Canje
-from .forms import EncuestaForm, EmpleadoForm, CanjeForm
+from .models import Encuesta, Empleado
+from .forms import EncuestaForm, EmpleadoForm
 from datetime import timedelta
 from .services import ReportesService
 from .ai import SentimentAnalyzer

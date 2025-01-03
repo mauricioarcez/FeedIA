@@ -1,6 +1,6 @@
 # encuestas/forms.py
 from django import forms
-from .models import Encuesta, Empleado, Canje
+from .models import Encuesta, Empleado
 
 class EmpleadoForm(forms.ModelForm):
     class Meta:

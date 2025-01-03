@@ -65,7 +65,6 @@ INSTALLED_APPS = [
     # Local apps
     'apps.usuarios',
     'apps.encuestas',
-    'apps.canje',
     'apps.utils',
 ]
 

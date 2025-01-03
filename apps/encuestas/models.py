@@ -4,7 +4,6 @@ from django.utils import timezone
 from .ai import SentimentAnalyzer
 import string
 import logging
-from apps.usuarios.models import CustomUser
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 from django.core.cache import cache
 from django.db.models import Avg, Count, Q, Case, When, FloatField
-from django.db.models.functions import Coalesce, TruncDate
+from django.db.models.functions import Coalesce
 from typing import Dict, List
 import plotly.graph_objects as go
 import plotly.utils
