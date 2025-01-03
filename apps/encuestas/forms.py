@@ -1,6 +1,6 @@
 # encuestas/forms.py
 from django import forms
-from .models import Encuesta, Empleado
+from .models import Encuesta, Empleado, Canje
 
 class EmpleadoForm(forms.ModelForm):
     class Meta:
@@ -73,7 +73,7 @@ class EncuestaForm(forms.ModelForm):
             'tipo_cliente': '¿Qué tipo de cliente eres?',
             'experiencia_general': 'Califica tu experiencia general (1-5)',
             'atencion_servicio': 'Califica la atención del servicio (1-5)',
-            'recomendaciones': 'Comentanos tu experiencia o sugerencias',
+            'recomendaciones': 'Comentanos tus sugerencias',
             'hashtag': 'Define el servicio en una palabra'
         }
 
@@ -82,4 +82,3 @@ class EncuestaForm(forms.ModelForm):
         if commit:
             encuesta.save()
         return encuesta
-

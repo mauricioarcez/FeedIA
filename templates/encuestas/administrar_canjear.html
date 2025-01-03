@@ -1,0 +1,29 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block content %}
+<div class="administrar-canjear-container">
+    <h2>Administrar Canjes</h2>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-canjear">Agregar Canje</button>
+    </form>
+
+    <h3>Canjes Disponibles:</h3>
+    <div class="canjes-grid">
+        {% for canje in canjes %}
+            <div class="canje-card">
+                {% if canje.imagen %}
+                    <img src="{{ canje.imagen.url }}" alt="{{ canje.descripcion }}" />
+                {% else %}
+                    <img src="{% static 'img/sin-imagen.jpeg' %}" alt="Imagen no disponible" />
+                {% endif %}
+                <h4>{{ canje.descripcion }}</h4>
+                <p>Puntos requeridos: {{ canje.puntos_requeridos }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

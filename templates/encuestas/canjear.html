@@ -1,0 +1,42 @@
+{% extends 'base_logged_in.html' %}
+
+{% block content %}
+<div class="canjear-container">
+    <h2>Canjear Puntos</h2>
+    <form method="GET">
+        {% csrf_token %}
+        
+        <label for="negocio">Selecciona un Negocio:</label>
+        <select name="negocio" id="negocio" required onchange="this.form.submit()">
+            <option value="">Seleccione un negocio</option>
+            {% for negocio in negocios %}
+                <option value="{{ negocio.id }}" {% if negocio.id|stringformat:"s" == request.GET.negocio %}selected{% endif %}>
+                    {{ negocio.nombre }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if canjes %}
+    <h3>Canjes Disponibles:</h3>
+    <div class="canjear-stats-cards">
+        {% for canje in canjes %}
+            <div class="canjear-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">{{ canje.descripcion }}</h3>
+                    <p class="stat-label">Requiere: {{ canje.puntos_requeridos }} puntos</p>
+                    <p class="stat-label">Descuento: 10%</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p>No hay canjes disponibles para el negocio seleccionado.</p>
+    {% endif %}
+    
+    <p>Tienes {{ user.puntos }} puntos disponibles.</p>
+</div>
+{% endblock %}

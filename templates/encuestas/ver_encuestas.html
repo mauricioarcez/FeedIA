@@ -7,19 +7,74 @@
 <div class="encuestas-dashboard">
     <header class="dashboard-header">
         <h2>Panel de Encuestas</h2>
-        <div class="stats-container">
-            <div class="stat-card">
-                <i class="fas fa-poll"></i>
+        <div class="ver-encuestas-stats-cards">
+            <div class="ver-encuestas-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-poll"></i>
+                </div>
                 <span class="stat-value">{{ total_encuestas }}</span>
                 <span class="stat-label">Total Encuestas</span>
             </div>
-            <div class="stat-card">
-                <i class="fas fa-check-circle"></i>
+            <div class="ver-encuestas-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
                 <span class="stat-value">{{ encuestas_completadas }}</span>
                 <span class="stat-label">Completadas</span>
             </div>
+            <div class="ver-encuestas-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="stat-value">{{ promedio_servicio|floatformat:1 }}</span>
+                <span class="stat-label">Prom. Servicio</span>
+            </div>
+            <div class="ver-encuestas-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <span class="stat-value">{{ promedio_experiencia|floatformat:1 }}</span>
+                <span class="stat-label">Prom. Experiencia</span>
+            </div>
         </div>
     </header>
+
+    <!-- Filtros -->
+    <div class="filters">
+        <form method="GET" action="">
+            <label for="empleado">Filtrar por Empleado:</label>
+            <select name="empleado" id="empleado" class="filter-select">
+                <option value="">Todos</option>
+                {% for empleado in empleados %}
+                    <option value="{{ empleado.id }}" {% if empleado.id|stringformat:"s" == request.GET.empleado %}selected{% endif %}>
+                        {{ empleado.nombre }} {{ empleado.apellido }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="sentimiento">Filtrar por Sentimiento:</label>
+            <select name="sentimiento" id="sentimiento" class="filter-select">
+                <option value="">Todos</option>
+                {% for senti in sentimientos %}
+                    <option value="{{ senti }}" {% if senti == request.GET.sentimiento %}selected{% endif %}>
+                        {{ senti }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="servicio">Filtrar por Servicio:</label>
+            <select name="servicio" id="servicio" class="filter-select">
+                <option value="">Todos</option>
+                {% for i in servicios %}
+                    <option value="{{ i }}" {% if i|stringformat:"s" == request.GET.servicio %}selected{% endif %}>
+                        {{ i }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="filter-button">Filtrar</button>
+        </form>
+    </div>
 
     {% if messages %}
     <div class="messages-container">
@@ -52,8 +107,28 @@
                     <span>Creada: {{ encuesta.fecha_respuesta|date:"d/m/Y H:i" }}</span>
                 </div>
                 <div class="info-row">
-                    <i class="fas fa-clock"></i>
-                    <span>Expira: {{ encuesta.fecha_expiracion|date:"d/m/Y H:i" }}</span>
+                    <i class="fas fa-star"></i>
+                    <span>Puntuación: {{ encuesta.atencion_servicio }}</span>
+                </div>
+                <div class="info-row">
+                    <i class="fas fa-comment"></i>
+                    <span>Comentarios: {{ encuesta.recomendaciones }}</span>
+                </div>
+                <div class="info-row">
+                    <i class="fas fa-hashtag"></i>
+                    <span>Hashtag: {{ encuesta.hashtag }}</span>
+                </div>
+                <div class="info-row">
+                    <i class="fas fa-user"></i>
+                    <span>Empleado: {{ encuesta.empleado.nombre }} {{ encuesta.empleado.apellido }}</span>
+                </div>
+                <div class="info-row">
+                    <i class="fas fa-user-tag"></i>
+                    <span>Tipo de Cliente: {{ encuesta.tipo_cliente }}</span>
+                </div>
+                <div class="info-row">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>Experiencia General: {{ encuesta.experiencia_general }}</span>
                 </div>
                 {% if encuesta.encuesta_completada and encuesta.sentimiento %}
                 <div class="sentiment-container">
@@ -67,18 +142,30 @@
         </div>
         {% endfor %}
     </div>
+
+    <!-- Paginación -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if encuestas.has_previous %}
+                <a href="?page=1" class="pagination-link">&laquo; Primera</a>
+                <a href="?page={{ encuestas.previous_page_number }}" class="pagination-link">Anterior</a>
+            {% endif %}
+
+            <span class="current">
+                Página {{ encuestas.number }} de {{ encuestas.paginator.num_pages }}.
+            </span>
+
+            {% if encuestas.has_next %}
+                <a href="?page={{ encuestas.next_page_number }}" class="pagination-link">Siguiente</a>
+                <a href="?page={{ encuestas.paginator.num_pages }}" class="pagination-link">Última &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
     {% else %}
     <div class="empty-state">
         <i class="fas fa-clipboard-list"></i>
         <p>No hay encuestas generadas aún.</p>
     </div>
     {% endif %}
-    
-    <div class="action-buttons">
-        <a href="{% url 'encuestas:crear_encuesta' %}" class="btn-create">
-            <i class="fas fa-plus"></i>
-            Generar Nueva Encuesta
-        </a>
-    </div>
 </div>
 {% endblock %} 

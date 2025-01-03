@@ -48,6 +48,12 @@
                         <span>Completar Encuesta</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{% url 'encuestas:canjear' %}" class="{% if request.resolver_match.url_name == 'canjear' %}active{% endif %}">
+                        <i class="fas fa-gift"></i>
+                        <span>Canjear Puntos</span>
+                    </a>
+                </li>
             </div>
             {% elif user.user_type == 'business' %}
             <div class="nav-section">
@@ -73,6 +79,12 @@
                     <a href="{% url 'encuestas:crear_encuesta' %}" class="{% if request.resolver_match.url_name == 'crear_encuesta' %}active{% endif %}">
                         <i class="fas fa-plus-circle"></i>
                         <span>Generar Encuesta</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'encuestas:administrar_canjear' %}" class="{% if request.resolver_match.url_name == 'administrar_canjear' %}active{% endif %}">
+                        <i class="fas fa-gift"></i>
+                        <span>Administrar Canjes</span>
                     </a>
                 </li>
             </div>

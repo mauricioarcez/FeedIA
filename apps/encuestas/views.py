@@ -4,13 +4,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from apps.usuarios.models import CustomUser
-from .models import Encuesta, Empleado
-from .forms import EncuestaForm, EmpleadoForm
+from .models import Encuesta, Empleado, Canje
+from .forms import EncuestaForm, EmpleadoForm, CanjeForm
 from datetime import timedelta
 from .services import ReportesService
 from .ai import SentimentAnalyzer
 from apps.encuestas.ai.sentiment_analyzer import SentimentAnalyzer
 import logging
+from django.core.paginator import Paginator
+from django.db.models import Avg
 
 logger = logging.getLogger(__name__)
 
@@ -105,18 +107,49 @@ def completar_encuesta(request, codigo):
 def ver_encuestas(request):
     """Vista para ver todas las encuestas generadas por el negocio"""
     if request.user.is_business_user():
+        # Obtener todos los empleados del negocio
+        empleados = Empleado.objects.filter(negocio=request.user)
+
+        # Obtener los filtros de la solicitud
+        empleado_id = request.GET.get('empleado')
+        sentimiento = request.GET.get('sentimiento')
+        servicio = request.GET.get('servicio')  # Nuevo filtro para servicio
+
         # Filtrar encuestas donde el negocio es el usuario actual y ordenar por fecha descendente
-        encuestas = Encuesta.objects.filter(negocio=request.user).order_by('-fecha_respuesta')
-        
+        encuestas = Encuesta.objects.filter(negocio=request.user).order_by('-fecha_respuesta').select_related('empleado')
+
+        # Aplicar filtros si se proporcionan
+        if empleado_id:
+            encuestas = encuestas.filter(empleado_id=empleado_id)
+        if sentimiento:
+            encuestas = encuestas.filter(sentimiento=sentimiento)
+        if servicio:  # Aplicar filtro de servicio
+            encuestas = encuestas.filter(atencion_servicio=servicio)
+
+        # Configurar la paginación
+        paginator = Paginator(encuestas, 10)  # Mostrar 10 encuestas por página
+        page_number = request.GET.get('page')  # Obtener el número de página de la URL
+        encuestas_page = paginator.get_page(page_number)  # Obtener las encuestas para la página actual
+
+        # Calcular el promedio de servicio
+        promedio_servicio = encuestas.aggregate(Avg('atencion_servicio'))['atencion_servicio__avg'] or 0
+        # Calcular el promedio de experiencia general
+        promedio_experiencia = encuestas.aggregate(Avg('experiencia_general'))['experiencia_general__avg'] or 0
+
         # Contar encuestas completadas
         encuestas_completadas = encuestas.filter(encuesta_completada=True).count()
-        
+
         context = {
-            'encuestas': encuestas,
-            'total_encuestas': encuestas.count(),
-            'encuestas_completadas': encuestas_completadas
+            'encuestas': encuestas_page,  # Usar la página de encuestas
+            'total_encuestas': paginator.count,  # Total de encuestas
+            'encuestas_completadas': encuestas_completadas,
+            'promedio_servicio': promedio_servicio,  # Promedio de servicio
+            'promedio_experiencia': promedio_experiencia,  # Promedio de experiencia general
+            'empleados': empleados,  # Pasar empleados al contexto
+            'sentimientos': ['POS', 'NEU', 'NEG'],  # Lista de sentimientos para el filtro
+            'servicios': range(1, 6),  # Suponiendo que el servicio es un número del 1 al 5
         }
-        
+
         return render(request, 'encuestas/ver_encuestas.html', context)
     else:
         messages.error(request, "No tienes permiso para ver esta página")
@@ -205,5 +238,7 @@ def reportes(request):
     }
     
     return render(request, 'encuestas/reportes.html', context)
+
+# ------------------------------------------------------------------------------------------------
 
 

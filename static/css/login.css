@@ -16,7 +16,7 @@
   border-radius: 20px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 400px; 
 }
 
 /* Título del formulario */
@@ -32,6 +32,7 @@
 /* Contenedor de cada campo del formulario */
 .form-group {
   margin-bottom: 25px;
+  margin-right: 40px;
 }
 
 /* Estilos para las etiquetas */
@@ -47,7 +48,7 @@
 /* Estilos para los campos de entrada */
 .form-group input {
   width: 100%;
-  padding: 12px 15px;
+  padding: 12px 11px;
   border: 2px solid #e1e1e1;
   border-radius: 25px;
   font-size: 1rem;

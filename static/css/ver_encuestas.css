@@ -27,47 +27,73 @@
     font-family: var(--font-main);
 }
 
-.stats-container {
+.ver-encuestas-stats-cards {
     display: flex;
-    gap: 1.5rem;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
     margin-bottom: 2rem;
+    flex-wrap: nowrap;
 }
 
-.stat-card {
-    background: var(--color-light);
-    padding: 1.5rem;
-    border-radius: 15px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    flex: 1;
+.ver-encuestas-stat-card {
+    flex: 0 0 140px;
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    width: 140px;
+    height: 140px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: all 0.3s ease;
+    justify-content: center;
+    text-align: center;
+    border: none;
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-}
-
-.stat-card i {
-    font-size: 2rem;
+.ver-encuestas-stat-card .stat-icon {
+    background: var(--color-primary);
     color: var(--color-secondary);
-    margin-bottom: 0.8rem;
+    width: 37px;
+    height: 37px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    position: relative;
 }
 
-.stat-value {
-    font-size: 2rem;
-    font-weight: 600;
-    color: var(--color-primary);
-    font-family: var(--font-main);
+.ver-encuestas-stat-card .stat-icon i {
+    position: absolute;
+    top: -4px;
 }
 
-.stat-label {
+.ver-encuestas-stat-card .stat-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+}
+
+.ver-encuestas-stat-card .stat-content h3 {
     color: var(--color-text);
-    font-size: 1rem;
+    font-size: 0.8rem;
+    margin: 0;
+    line-height: 1.2;
+    font-family: var(--font-main);
     font-weight: 500;
-    margin-top: 0.3rem;
+}
+
+.ver-encuestas-stat-card .stat-value {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    font-family: var(--font-main);
 }
 
 .encuestas-grid {
@@ -75,6 +101,7 @@
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
+    
 }
 
 .encuesta-card {
@@ -83,6 +110,7 @@
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     overflow: hidden;
     transition: all 0.3s ease;
+
 }
 
 .encuesta-card:hover {
@@ -200,7 +228,7 @@
         padding: 1rem;
     }
 
-    .stats-container {
+    .ver-encuestas-stats-cards {
         flex-direction: column;
     }
 
@@ -211,4 +239,85 @@
     .dashboard-header h2 {
         font-size: 2rem;
     }
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.step-links {
+    display: flex;
+    align-items: center;
+}
+
+.pagination-link {
+    padding: 10px 15px;
+    margin: 0 5px;
+    background-color: var(--color-secondary);
+    color: var(--color-light);
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.pagination-link:hover {
+    background-color: var(--color-primary);
+}
+
+.current {
+    padding: 10px 15px;
+    margin: 0 5px;
+    background-color: var(--color-neutral);
+    color: var(--color-text);
+    border-radius: 5px;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap; /* Permitir que los filtros se ajusten en varias líneas si es necesario */
+    margin-bottom: 20px; /* Espaciado inferior */
+    padding: 15px; /* Espaciado interno */
+    background-color: var(--color-background); /* Color de fondo */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    border: 1px solid var(--color-primary);
+}
+
+.filters label {
+    margin-right: 10px; /* Espaciado a la derecha de las etiquetas */
+    font-weight: bold; /* Negrita para las etiquetas */
+    color: var(--color-primary); /* Color del texto */
+}
+
+.filter-select {
+    margin-right: 15px; /* Espaciado a la derecha de los selectores */
+    padding: 8px; /* Espaciado interno */
+    border: 1px solid var(--color-secondary); /* Borde */
+    border-radius: 4px; /* Bordes redondeados */
+    background-color: var(--color-light); /* Color de fondo */
+    transition: border-color 0.3s; /* Transición suave para el borde */
+    font-family: var(--font-main); /* Fuente principal */
+}
+
+.filter-select:focus {
+    border-color: var(--color-primary); /* Color del borde al enfocar */
+    outline: none; /* Sin contorno */
+}
+
+.filter-button {
+    padding: 8px 20px; /* Espaciado interno */
+    background-color: var(--color-secondary); /* Color de fondo del botón */
+    color: var(--color-light); /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 4px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor al pasar el mouse */
+    transition: background-color 0.3s; /* Transición suave para el fondo */
+    font-family: var(--font-main); /* Fuente principal */
+    font-weight: 500; /* Peso de la fuente */
+}
+
+.filter-button:hover {
+    background-color: var(--color-primary); /* Color de fondo al pasar el mouse */
 }

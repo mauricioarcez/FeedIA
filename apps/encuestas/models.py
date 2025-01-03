@@ -4,6 +4,7 @@ from django.utils import timezone
 from .ai import SentimentAnalyzer
 import string
 import logging
+from apps.usuarios.models import CustomUser
 
 logger = logging.getLogger(__name__)
 
@@ -137,3 +138,4 @@ class Encuesta(models.Model):
             self.hashtag = self.hashtag.strip().replace(' ', '')
             # Eliminar el símbolo # si el usuario lo incluyó
             self.hashtag = self.hashtag.replace('#', '')
+
